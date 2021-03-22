@@ -1,5 +1,6 @@
 import React from 'react';
 import './CommonPageHeader.scss';
+import {useHistory} from 'react-router-dom';
 
 /**
  * Props for the CommonPageHeader component
@@ -16,9 +17,19 @@ interface CommonPageHeaderProps {
  * @constructor
  */
 const CommonPageHeader: React.FunctionComponent<CommonPageHeaderProps> = (props: CommonPageHeaderProps) => {
+    // Get the history hook
+    const history = useHistory();
+
+    // On click listener for the header title
+    const onHeaderTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        // Prevent the default behavior of the anchor link and use react-router routing instead
+        e.preventDefault();
+        history.push('/');
+    };
+
     return (
         <div className={'common-page-header'}>
-            <h1>Quantalk</h1>
+            <a href={'/'} className={'title-text button-like'} onClick={onHeaderTitleClick}>Quantalk</a>
             {props.rightNode}
         </div>
     );

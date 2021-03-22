@@ -10,7 +10,10 @@
   box-sizing: border-box;
   padding: 0 4px;
 
-  > h1 {
+  > .title-text {
     flex: 1;
+    font-size: 1.8rem;
+    color: #FFFFFF;
+    text-decoration: none;
   }
 }

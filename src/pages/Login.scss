@@ -2,16 +2,16 @@
   justify-content: center;
   align-items: center;
 
-  .outlined-card {
-    width: 25%;
-  }
-
   .common-page-layout-content {
     align-items: center;
     justify-content: center;
-  }
 
-  .title-text {
-    font-size: 2rem;
+    .outlined-card {
+      width: 25%;
+
+      .title-text {
+        font-size: 2rem;
+      }
+    }
   }
 }

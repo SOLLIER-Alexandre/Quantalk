@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import {useLoggedInUser} from './api/authentication/AuthenticationManager';
 import LoggedOutRoutes from './routes/LoggedOutRoutes';
 import LoggedInRoutes from './routes/LoggedInRoutes';
@@ -11,16 +11,16 @@ const App = () => {
     if (loggedInUser !== undefined) {
         // User is logged in
         return (
-            <Router>
+            <BrowserRouter>
                 <LoggedInRoutes/>
-            </Router>
+            </BrowserRouter>
         );
     } else {
         // User is logged out
         return (
-            <Router>
+            <BrowserRouter>
                 <LoggedOutRoutes/>
-            </Router>
+            </BrowserRouter>
         );
     }
 };
