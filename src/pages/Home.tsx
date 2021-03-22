@@ -1,7 +1,7 @@
 import authenticationManager from '../api/authentication/AuthenticationManager';
 import CommonPageLayout from '../components/utils/CommonPageLayout';
 import {useEffect} from 'react';
-import {ChannelAPI} from '../api/channel/ChannelAPI';
+import ChannelAPI from '../api/channel/ChannelAPI';
 
 /**
  * The home page of the app

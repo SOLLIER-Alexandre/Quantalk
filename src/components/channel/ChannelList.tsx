@@ -10,6 +10,6 @@ const ChannelList: React.FunctionComponent = () => {
             <p>Hello, Channels!</p>
         </div>
     );
-}
+};
 
 export default ChannelList;

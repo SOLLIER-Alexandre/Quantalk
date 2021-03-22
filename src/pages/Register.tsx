@@ -6,6 +6,7 @@ import {RegisterResponseStatus} from '../api/authentication/RegisterResponse';
 import './Register.scss';
 import {useState} from 'react';
 import CommonPageLayout from '../components/utils/CommonPageLayout';
+import AuthenticationAPI from '../api/authentication/AuthenticationAPI';
 
 /**
  * The page for the user to register
@@ -24,11 +25,11 @@ const Register = () => {
                 <p className={'title-text'}>S'enregistrer</p>
                 <RegisterBox error={errorState}
                              onRegisterButtonClick={(username, password) => {
-                                 authenticationManager.register(username, password)
-                                     .then((response) => {
-                                         if (response.error) {
+                                 AuthenticationAPI.register(username, password)
+                                     .then((res) => {
+                                         if (res.error) {
                                              // Show an error message according to the status code
-                                             switch (response.status) {
+                                             switch (res.status) {
                                                  case RegisterResponseStatus.STATUS_REQUEST_ERROR:
                                                      setErrorState('Une erreur inconnue s\'est produite');
                                                      break;
@@ -37,6 +38,9 @@ const Register = () => {
                                                      break;
                                              }
                                          } else {
+                                             // Remember the JWT
+                                             authenticationManager.storeJWT(res.token);
+
                                              // Replace the current path
                                              history.replace('/');
                                          }

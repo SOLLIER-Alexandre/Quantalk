@@ -6,6 +6,7 @@ import {useState} from 'react';
 import {LoginResponseStatus} from '../api/authentication/LoginResponse';
 import './Login.scss';
 import CommonPageLayout from '../components/utils/CommonPageLayout';
+import AuthenticationAPI from '../api/authentication/AuthenticationAPI';
 
 /**
  * The page for the user to log in
@@ -24,11 +25,11 @@ const Login = () => {
                 <p className={'title-text'}>Se connecter</p>
                 <LoginBox error={errorState}
                           onLoginButtonClick={(username, password) => {
-                              authenticationManager.login(username, password)
-                                  .then((response) => {
-                                      if (response.error) {
+                              AuthenticationAPI.login(username, password)
+                                  .then((res) => {
+                                      if (res.error) {
                                           // Show an error message according to the status code
-                                          switch (response.status) {
+                                          switch (res.status) {
                                               case LoginResponseStatus.STATUS_REQUEST_ERROR:
                                                   setErrorState('Une erreur inconnue s\'est produite');
                                                   break;
@@ -37,6 +38,9 @@ const Login = () => {
                                                   break;
                                           }
                                       } else {
+                                          // Remember the JWT
+                                          authenticationManager.storeJWT(res.token);
+
                                           // Replace the current path
                                           history.replace('/');
                                       }

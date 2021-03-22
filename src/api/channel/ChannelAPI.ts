@@ -4,7 +4,7 @@ import {ChannelGetResponse} from './ChannelGetResponse';
 /**
  * Interacts with the server chat channels API
  */
-export abstract class ChannelAPI {
+export default abstract class ChannelAPI {
     /**
      * Fetches the chat channels stored on the server
      */

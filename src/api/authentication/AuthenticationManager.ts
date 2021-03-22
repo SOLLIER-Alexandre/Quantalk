@@ -1,8 +1,5 @@
-import {RegisterResponse} from './RegisterResponse';
-import {LoginResponse} from './LoginResponse';
 import {useEffect, useState} from 'react';
 import {JWTData} from './JWTData';
-import {BASE_API_URL} from '../CommonsAPI';
 
 /**
  * Manages everything related to user authentication
@@ -15,27 +12,71 @@ class AuthenticationManager {
     private onLoggedInUserChangeListeners: Array<(userId?: number) => void> = [];
 
     /**
-     * Tries to login or register the user against the server
+     * Stores a received authentication JWT
      *
-     * @param url URL of the API endpoint to call
-     * @param username Username of the user to login/register
-     * @param password Password of the user to login/register
+     * @param jwt JWT to store
      * @private
      */
-    private static loginOrRegister(url: string, username: string, password: string): Promise<any> {
-        return fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                return response.json();
-            });
+    public storeJWT(jwt: string): void {
+        // Parse the JWT
+        const userId = AuthenticationManager.getUserIdFromJWT(jwt);
+
+        // Tell the listeners we got a new JWT
+        for (const listener of this.onLoggedInUserChangeListeners) {
+            listener(userId);
+        }
+
+        // Set the JWT to the cookie
+        AuthenticationManager.setAuthCookie(jwt);
+    }
+
+    /**
+     * Sets the authentication cookie
+     *
+     * @param jwt JSON Web Token to remember
+     * @private
+     */
+    private static setAuthCookie(jwt: string): void {
+        // Compute expire date
+        const date: Date = new Date();
+        date.setDate(date.getDate() + 30);
+
+        // Set the cookie
+        document.cookie = `AUTH_JWT=${jwt}; Secure; SameSite=Strict; Expires=${date.toString()}`;
+    }
+
+    /**
+     * Gets the authentication token from the cookie
+     */
+    public getAuthCookie(): string | undefined {
+        return document.cookie
+            .split('; ')
+            .find(row => row.startsWith('AUTH_JWT='))
+            ?.split('=')[1];
+    }
+
+    /**
+     * Refreshes the expiration date on the auth cookie
+     */
+    public refreshCookie(): void {
+        // Refresh the current cookie if there is one set
+        const currentCookie: string | undefined = this.getAuthCookie();
+
+        if (currentCookie !== undefined) {
+            AuthenticationManager.setAuthCookie(currentCookie);
+        }
+    }
+
+    /**
+     * Gets the User ID from the JWT stored in the cookie
+     */
+    public getUserIdFromCookie(): number | undefined {
+        const authToken = this.getAuthCookie();
+
+        if (authToken !== undefined) {
+            // Parse the user ID from the token
+            return AuthenticationManager.getUserIdFromJWT(authToken);
+        }
     }
 
     /**
@@ -57,59 +98,6 @@ class AuthenticationManager {
     }
 
     /**
-     * Sets the authentication cookie
-     *
-     * @param jwt JSON Web Token to remember
-     * @private
-     */
-    private static setAuthCookie(jwt: string): void {
-        // Compute expire date
-        const date: Date = new Date();
-        date.setDate(date.getDate() + 30);
-
-        // Set the cookie
-        document.cookie = `AUTH_JWT=${jwt}; Secure; SameSite=Strict; Expires=${date.toString()}`;
-    }
-
-    /**
-     * Tries to register a new user against the server using the specified credentials
-     *
-     * @param username Username of the new user
-     * @param password Password of the new user
-     */
-    public register(username: string, password: string): Promise<RegisterResponse> {
-        return AuthenticationManager.loginOrRegister(BASE_API_URL + '/register', username, password)
-            .then((json) => {
-                const response: RegisterResponse = json;
-                if (!response.error) {
-                    // Handle the token
-                    this.storeJWT(response.token);
-                }
-
-                return response;
-            });
-    }
-
-    /**
-     * Tries to login the user against the server using the specified credentials
-     *
-     * @param username Username of the user
-     * @param password Password of the user
-     */
-    public login(username: string, password: string): Promise<LoginResponse> {
-        return AuthenticationManager.loginOrRegister(BASE_API_URL + '/login', username, password)
-            .then((json) => {
-                const response: LoginResponse = json;
-                if (!response.error) {
-                    // Handle the token
-                    this.storeJWT(response.token);
-                }
-
-                return response;
-            });
-    }
-
-    /**
      * Logs out the user
      */
     public logout(): void {
@@ -119,40 +107,6 @@ class AuthenticationManager {
         // Inform the listeners
         for (const listener of this.onLoggedInUserChangeListeners) {
             listener(undefined);
-        }
-    }
-
-    /**
-     * Gets the authentication token from the cookie
-     */
-    public getAuthJWTFromCookie(): string | undefined {
-        return document.cookie
-            .split('; ')
-            .find(row => row.startsWith('AUTH_JWT='))
-            ?.split('=')[1];
-    }
-
-    /**
-     * Refreshes the expiration date on the auth cookie
-     */
-    public refreshCookie(): void {
-        // Refresh the current cookie if there is one set
-        const currentCookie: string | undefined = this.getAuthJWTFromCookie();
-
-        if (currentCookie !== undefined) {
-            AuthenticationManager.setAuthCookie(currentCookie);
-        }
-    }
-
-    /**
-     * Gets the User ID from the JWT stored in the cookie
-     */
-    public getUserIdFromCookie(): number | undefined {
-        const authToken = this.getAuthJWTFromCookie();
-
-        if (authToken !== undefined) {
-            // Parse the user ID from the token
-            return AuthenticationManager.getUserIdFromJWT(authToken);
         }
     }
 
@@ -174,25 +128,6 @@ class AuthenticationManager {
         this.onLoggedInUserChangeListeners = this.onLoggedInUserChangeListeners.filter((item) => {
             return item !== listener;
         });
-    }
-
-    /**
-     * Stores a received authentication JWT
-     *
-     * @param jwt JWT to store
-     * @private
-     */
-    private storeJWT(jwt: string): void {
-        // Parse the JWT
-        const userId = AuthenticationManager.getUserIdFromJWT(jwt);
-
-        // Tell the listeners we got a new JWT
-        for (const listener of this.onLoggedInUserChangeListeners) {
-            listener(userId);
-        }
-
-        // Set the JWT to the cookie
-        AuthenticationManager.setAuthCookie(jwt);
     }
 }
 
