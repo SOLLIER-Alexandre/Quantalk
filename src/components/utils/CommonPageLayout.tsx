@@ -1,5 +1,6 @@
 import React from 'react';
 import './CommonPageLayout.scss';
+import CommonPageHeader from './CommonPageHeader';
 
 /**
  * Props for the CommonPageLayout component
@@ -18,7 +19,12 @@ interface CommonPageLayoutProps {
     /**
      * Children of the page
      */
-    children?: React.ReactNode;
+    children?: React.ReactNode,
+
+    /**
+     * Extra node to put at the right of the page header
+     */
+    headerExtra?: React.ReactNode,
 }
 
 /**
@@ -35,9 +41,7 @@ const CommonPageLayout: React.FunctionComponent<CommonPageLayoutProps> = (props:
 
     return (
         <div className={className} id={props.id}>
-            <div className={'common-page-header'}>
-                <h1>Quantalk</h1>
-            </div>
+            <CommonPageHeader rightNode={props.headerExtra}/>
 
             <div className={'common-page-layout-content'}>
                 {props.children}

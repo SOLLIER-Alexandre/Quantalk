@@ -4,7 +4,7 @@ import './TextInput.scss';
 /**
  * Props for the TextInput component
  */
-export interface TextInputProps {
+interface TextInputProps {
     /**
      * Title of text above the text input
      */

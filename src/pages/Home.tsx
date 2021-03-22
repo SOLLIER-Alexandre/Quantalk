@@ -17,7 +17,7 @@ const Home = () => {
     }, []);
 
     return (
-        <CommonPageLayout>
+        <CommonPageLayout headerExtra={<p>Hello, Header!</p>}>
             <button onClick={() => {
                 authenticationManager.logout();
             }}>logout
