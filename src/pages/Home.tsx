@@ -1,5 +1,5 @@
 import authenticationManager from '../api/authentication/AuthenticationManager';
-import CommonPageLayout from '../components/utils/CommonPageLayout';
+import CommonPageLayout from '../components/common_page/CommonPageLayout';
 import {useEffect} from 'react';
 import ChannelAPI from '../api/channel/ChannelAPI';
 

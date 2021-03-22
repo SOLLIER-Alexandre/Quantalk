@@ -1,11 +1,11 @@
 import {useHistory} from 'react-router-dom';
 import OutlinedCard from '../components/utils/OutlinedCard';
-import RegisterBox from '../components/register/RegisterBox';
+import RegisterBox from '../components/authentication/RegisterBox';
 import authenticationManager from '../api/authentication/AuthenticationManager';
 import {RegisterResponseStatus} from '../api/authentication/RegisterResponse';
 import './Register.scss';
 import {useState} from 'react';
-import CommonPageLayout from '../components/utils/CommonPageLayout';
+import CommonPageLayout from '../components/common_page/CommonPageLayout';
 import AuthenticationAPI from '../api/authentication/AuthenticationAPI';
 
 /**
