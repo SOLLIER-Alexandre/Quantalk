@@ -23,6 +23,7 @@ const Login = () => {
         <CommonPageLayout id={'login-container'}>
             <OutlinedCard>
                 <p className={'title-text'}>Se connecter</p>
+
                 <LoginBox error={errorState}
                           onLoginButtonClick={(username, password) => {
                               AuthenticationAPI.login(username, password)
@@ -39,10 +40,13 @@ const Login = () => {
                                           }
                                       } else {
                                           // Remember the JWT
-                                          authenticationManager.storeJWT(res.token);
-
-                                          // Replace the current path
-                                          history.replace('/');
+                                          authenticationManager.handleJWT(res.token)
+                                              .then((res) => {
+                                                  if (res) {
+                                                      // Replace the current path
+                                                      history.replace('/');
+                                                  }
+                                              });
                                       }
                                   });
                           }}

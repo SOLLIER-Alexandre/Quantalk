@@ -1,6 +1,7 @@
 import {RegisterResponse} from './RegisterResponse';
 import {BASE_API_URL} from '../CommonsAPI';
 import {LoginResponse} from './LoginResponse';
+import {ProfileResponse} from './ProfileResponse';
 
 /**
  * Interacts with the server authentication API
@@ -44,6 +45,20 @@ export default abstract class AuthenticationAPI {
             }),
             headers: {
                 'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((json) => {
+                return json;
+            });
+    }
+
+    public static fetchProfile(authorization: string): Promise<ProfileResponse> {
+        return fetch(BASE_API_URL + '/profile', {
+            headers: {
+                'Authorization': authorization,
             },
         })
             .then((response) => {

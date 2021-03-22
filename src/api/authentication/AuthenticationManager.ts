@@ -1,33 +1,89 @@
 import {useEffect, useState} from 'react';
+import AuthenticationAPI from './AuthenticationAPI';
 import {JWTData} from './JWTData';
+
+/**
+ * Interface describing the data about the logged in user
+ */
+interface LoggedInUserData {
+    jwt: string,
+    id: number,
+    username?: string,
+}
 
 /**
  * Manages everything related to user authentication
  */
 class AuthenticationManager {
     /**
+     * Data about the logged in user
+     * @private
+     */
+    private loggedInUser?: LoggedInUserData;
+
+    /**
      * Listeners for callbacks called when the logged in user changed
      * @private
      */
-    private onLoggedInUserChangeListeners: Array<(userId?: number) => void> = [];
+    private onLoggedInUserChangeListeners: Array<(loggedInUser?: LoggedInUserData) => void> = [];
 
     /**
-     * Stores a received authentication JWT
+     * Constructs a new AuthenticationManager
+     */
+    constructor() {
+        // Get the JWT from the cookie
+        const authCookie = AuthenticationManager.getAuthCookie();
+
+        if (authCookie !== undefined) {
+            // Get user ID from the token
+            const userId = AuthenticationManager.getUserIdFromToken(authCookie);
+
+            if (userId !== undefined) {
+                // Set the logged in user without the username temporarily
+                this.setLoggedInUser({
+                    jwt: authCookie,
+                    id: userId,
+                });
+
+                AuthenticationAPI.fetchProfile('Bearer ' + authCookie)
+                    .then((response) => {
+                        if (!response.error) {
+                            // Set the logged in user
+                            this.setLoggedInUser({
+                                jwt: authCookie,
+                                id: response.id,
+                                username: response.username,
+                            });
+                        }
+                    });
+            }
+        }
+    }
+
+    /**
+     * Handles a received authentication JWT, saving it in a cookie and in the logged in user data
      *
-     * @param jwt JWT to store
+     * @param jwt JWT to handle
      * @private
      */
-    public storeJWT(jwt: string): void {
-        // Parse the JWT
-        const userId = AuthenticationManager.getUserIdFromJWT(jwt);
+    public handleJWT(jwt: string): Promise<boolean> {
+        // Get the profile
+        return AuthenticationAPI.fetchProfile('Bearer ' + jwt)
+            .then((response) => {
+                if (!response.error) {
+                    // Set the JWT to the cookie
+                    AuthenticationManager.setAuthCookie(jwt);
 
-        // Tell the listeners we got a new JWT
-        for (const listener of this.onLoggedInUserChangeListeners) {
-            listener(userId);
-        }
+                    // Set the logged in user
+                    this.setLoggedInUser({
+                        jwt: jwt,
+                        id: response.id,
+                        username: response.username,
+                    });
+                }
 
-        // Set the JWT to the cookie
-        AuthenticationManager.setAuthCookie(jwt);
+                return !response.error;
+            });
     }
 
     /**
@@ -48,7 +104,7 @@ class AuthenticationManager {
     /**
      * Gets the authentication token from the cookie
      */
-    public getAuthCookie(): string | undefined {
+    public static getAuthCookie(): string | undefined {
         return document.cookie
             .split('; ')
             .find(row => row.startsWith('AUTH_JWT='))
@@ -58,7 +114,7 @@ class AuthenticationManager {
     /**
      * Refreshes the expiration date on the auth cookie
      */
-    public refreshCookie(): void {
+    public static refreshCookie(): void {
         // Refresh the current cookie if there is one set
         const currentCookie: string | undefined = this.getAuthCookie();
 
@@ -68,15 +124,37 @@ class AuthenticationManager {
     }
 
     /**
-     * Gets the User ID from the JWT stored in the cookie
+     * Logs out the user
      */
-    public getUserIdFromCookie(): number | undefined {
-        const authToken = this.getAuthCookie();
+    public logout(): void {
+        // Unset the auth cookie
+        document.cookie = 'AUTH_JWT=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
 
-        if (authToken !== undefined) {
-            // Parse the user ID from the token
-            return AuthenticationManager.getUserIdFromJWT(authToken);
+        // Unset the logged in user
+        this.setLoggedInUser(undefined);
+    }
+
+    /**
+     * Sets the currently logged in user
+     *
+     * @param loggedInUser New currently logged in user
+     */
+    public setLoggedInUser(loggedInUser?: LoggedInUserData): void {
+        this.loggedInUser = loggedInUser;
+
+        // Tell the listeners we got a new JWT
+        for (const listener of this.onLoggedInUserChangeListeners) {
+            listener(this.loggedInUser);
         }
+    }
+
+    /**
+     * Gets the currently logged in user
+     *
+     * @return The currently logged in user
+     */
+    public getLoggedInUser(): LoggedInUserData | undefined {
+        return this.loggedInUser;
     }
 
     /**
@@ -85,7 +163,7 @@ class AuthenticationManager {
      * @param jwt JWT to parse
      * @private
      */
-    private static getUserIdFromJWT(jwt: string): number | undefined {
+    private static getUserIdFromToken(jwt: string): number | undefined {
         // Parse the JWT
         const jwtParts = jwt.split('.');
 
@@ -98,24 +176,11 @@ class AuthenticationManager {
     }
 
     /**
-     * Logs out the user
-     */
-    public logout(): void {
-        // Unset the auth cookie
-        document.cookie = 'AUTH_JWT=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
-
-        // Inform the listeners
-        for (const listener of this.onLoggedInUserChangeListeners) {
-            listener(undefined);
-        }
-    }
-
-    /**
      * Adds a new callback called when the logged in user changes to the listeners
      *
      * @param listener Listener to add
      */
-    public addOnLoggedInUserChangeListener(listener: (userId?: number) => void): void {
+    public addOnLoggedInUserChangeListener(listener: (loggedInUser?: LoggedInUserData) => void): void {
         this.onLoggedInUserChangeListeners.push(listener);
     }
 
@@ -124,7 +189,7 @@ class AuthenticationManager {
      *
      * @param listener Listener to remove
      */
-    public removeOnLoggedInUserChangeListener(listener: (userId?: number) => void): void {
+    public removeOnLoggedInUserChangeListener(listener: (loggedInUser?: LoggedInUserData) => void): void {
         this.onLoggedInUserChangeListeners = this.onLoggedInUserChangeListeners.filter((item) => {
             return item !== listener;
         });
@@ -138,14 +203,14 @@ const authenticationManager: AuthenticationManager = new AuthenticationManager()
 export default authenticationManager;
 
 /**
- * Hook returning the currently logged in user ID, if any
+ * Hook returning the currently logged in user data, if any
  */
-export const useLoggedInUser = (): number | undefined => {
-    const [userId, setUserId] = useState<number | undefined>(authenticationManager.getUserIdFromCookie());
+export const useLoggedInUser = (): LoggedInUserData | undefined => {
+    const [loggedInUser, setLoggedInUser] = useState<LoggedInUserData | undefined>(authenticationManager.getLoggedInUser());
 
     useEffect(() => {
-        const loggedInUserChangeListener = (userId?: number): void => {
-            setUserId(userId);
+        const loggedInUserChangeListener = (loggedInUser?: LoggedInUserData): void => {
+            setLoggedInUser(loggedInUser);
         };
 
         authenticationManager.addOnLoggedInUserChangeListener(loggedInUserChangeListener);
@@ -154,5 +219,5 @@ export const useLoggedInUser = (): number | undefined => {
         };
     });
 
-    return userId;
+    return loggedInUser;
 };

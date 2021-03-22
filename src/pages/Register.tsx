@@ -23,6 +23,7 @@ const Register = () => {
         <CommonPageLayout id={'register-container'}>
             <OutlinedCard>
                 <p className={'title-text'}>S'enregistrer</p>
+
                 <RegisterBox error={errorState}
                              onRegisterButtonClick={(username, password) => {
                                  AuthenticationAPI.register(username, password)
@@ -39,10 +40,13 @@ const Register = () => {
                                              }
                                          } else {
                                              // Remember the JWT
-                                             authenticationManager.storeJWT(res.token);
-
-                                             // Replace the current path
-                                             history.replace('/');
+                                             authenticationManager.handleJWT(res.token)
+                                                 .then((res) => {
+                                                     if (res) {
+                                                         // Replace the current path
+                                                         history.replace('/');
+                                                     }
+                                                 });
                                          }
                                      });
                              }}
