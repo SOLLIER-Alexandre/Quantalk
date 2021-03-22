@@ -1,10 +1,17 @@
 #login-container {
-  height: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
 
   .outlined-card {
     width: 25%;
+  }
+
+  .common-page-layout-content {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .title-text {
+    font-size: 2rem;
   }
 }

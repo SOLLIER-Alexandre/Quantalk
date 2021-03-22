@@ -1,10 +1,11 @@
 import {useHistory} from 'react-router-dom';
 import OutlinedCard from '../components/utils/OutlinedCard';
 import RegisterBox from '../components/register/RegisterBox';
-import {AuthenticationManager} from '../api/authentication/AuthenticationManager';
+import authenticationManager from '../api/authentication/AuthenticationManager';
 import {RegisterResponseStatus} from '../api/authentication/RegisterResponse';
 import './Register.scss';
 import {useState} from 'react';
+import CommonPageLayout from '../components/utils/CommonPageLayout';
 
 /**
  * The page for the user to register
@@ -18,12 +19,12 @@ const Register = () => {
     const history = useHistory();
 
     return (
-        <div id={'register-container'}>
+        <CommonPageLayout id={'register-container'}>
             <OutlinedCard>
-                <h1>S'enregistrer</h1>
+                <p className={'title-text'}>S'enregistrer</p>
                 <RegisterBox error={errorState}
                              onRegisterButtonClick={(username, password) => {
-                                 AuthenticationManager.getInstance().register(username, password)
+                                 authenticationManager.register(username, password)
                                      .then((response) => {
                                          if (response.error) {
                                              // Show an error message according to the status code
@@ -45,7 +46,7 @@ const Register = () => {
                                  history.push('/');
                              }}/>
             </OutlinedCard>
-        </div>
+        </CommonPageLayout>
     );
 };
 

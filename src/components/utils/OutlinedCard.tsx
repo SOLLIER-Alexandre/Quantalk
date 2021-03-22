@@ -1,4 +1,4 @@
-import './OutlinedCard.css';
+import './OutlinedCard.scss';
 import React from 'react';
 
 /**

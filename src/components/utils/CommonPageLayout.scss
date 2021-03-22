@@ -1,0 +1,22 @@
+.common-page-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > * {
+    width: 100%;
+  }
+
+  .common-page-header {
+    background: #212121;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 2px 4px;
+    color: #FFFFFF;
+    box-sizing: border-box;
+    padding: 0 4px;
+  }
+
+  .common-page-layout-content {
+    display: flex;
+    flex: 1;
+  }
+}

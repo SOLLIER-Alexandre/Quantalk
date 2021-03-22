@@ -6,7 +6,7 @@ import {JWTData} from './JWTData';
 /**
  * Manages everything related to user authentication
  */
-export class AuthenticationManager {
+class AuthenticationManager {
     /**
      * Base URL of the API
      * @private
@@ -14,23 +14,10 @@ export class AuthenticationManager {
     private static readonly BASE_URL: string = 'https://jsiutinfo.alwaysdata.net/api';
 
     /**
-     * The instance of the AuthenticationManager singleton
-     * @private
-     */
-    private static readonly INSTANCE: AuthenticationManager = new AuthenticationManager();
-
-    /**
      * Listeners for callbacks called when the logged in user changed
      * @private
      */
     private onLoggedInUserChangeListeners: Array<(userId?: number) => void> = [];
-
-    /**
-     * Gets the instance of the AuthenticationManager singleton
-     */
-    public static getInstance(): AuthenticationManager {
-        return AuthenticationManager.INSTANCE;
-    }
 
     /**
      * Tries to login or register the user against the server
@@ -214,19 +201,25 @@ export class AuthenticationManager {
 }
 
 /**
+ * The single instance of the AuthenticationManager
+ */
+const authenticationManager: AuthenticationManager = new AuthenticationManager();
+export default authenticationManager;
+
+/**
  * Hook returning the currently logged in user ID, if any
  */
 export const useLoggedInUser = (): number | undefined => {
-    const [userId, setUserId] = useState<number | undefined>(AuthenticationManager.getInstance().getUserIdFromCookie());
+    const [userId, setUserId] = useState<number | undefined>(authenticationManager.getUserIdFromCookie());
 
     useEffect(() => {
         const loggedInUserChangeListener = (userId?: number): void => {
             setUserId(userId);
         };
 
-        AuthenticationManager.getInstance().addOnLoggedInUserChangeListener(loggedInUserChangeListener);
+        authenticationManager.addOnLoggedInUserChangeListener(loggedInUserChangeListener);
         return () => {
-            AuthenticationManager.getInstance().removeOnLoggedInUserChangeListener(loggedInUserChangeListener);
+            authenticationManager.removeOnLoggedInUserChangeListener(loggedInUserChangeListener);
         };
     });
 

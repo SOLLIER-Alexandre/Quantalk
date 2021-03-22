@@ -1,10 +1,11 @@
 import {useHistory} from 'react-router-dom';
 import OutlinedCard from '../components/utils/OutlinedCard';
 import LoginBox from '../components/login/LoginBox';
-import {AuthenticationManager} from '../api/authentication/AuthenticationManager';
+import authenticationManager from '../api/authentication/AuthenticationManager';
 import {useState} from 'react';
 import {LoginResponseStatus} from '../api/authentication/LoginResponse';
 import './Login.scss';
+import CommonPageLayout from '../components/utils/CommonPageLayout';
 
 /**
  * The page for the user to log in
@@ -18,12 +19,12 @@ const Login = () => {
     const history = useHistory();
 
     return (
-        <div id={'login-container'}>
+        <CommonPageLayout id={'login-container'}>
             <OutlinedCard>
-                <h1>Se connecter</h1>
+                <p className={'title-text'}>Se connecter</p>
                 <LoginBox error={errorState}
                           onLoginButtonClick={(username, password) => {
-                              AuthenticationManager.getInstance().login(username, password)
+                              authenticationManager.login(username, password)
                                   .then((response) => {
                                       if (response.error) {
                                           // Show an error message according to the status code
@@ -45,7 +46,7 @@ const Login = () => {
                               history.push('/register');
                           }}/>
             </OutlinedCard>
-        </div>
+        </CommonPageLayout>
     );
 };
 

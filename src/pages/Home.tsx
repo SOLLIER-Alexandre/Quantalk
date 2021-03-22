@@ -1,18 +1,20 @@
+import authenticationManager from '../api/authentication/AuthenticationManager';
+import CommonPageLayout from '../components/utils/CommonPageLayout';
+
 /**
  * The home page of the app
  * @constructor
  */
-import {AuthenticationManager} from '../api/authentication/AuthenticationManager';
-
 const Home = () => {
     return (
-        <div>
-            <h1>Home</h1>
+        <CommonPageLayout>
+            <p className={'title-text'}>Home</p>
+
             <button onClick={() => {
-                AuthenticationManager.getInstance().logout();
+                authenticationManager.logout();
             }}>logout
             </button>
-        </div>
+        </CommonPageLayout>
     );
 };
 
