@@ -2,17 +2,12 @@ import {RegisterResponse} from './RegisterResponse';
 import {LoginResponse} from './LoginResponse';
 import {useEffect, useState} from 'react';
 import {JWTData} from './JWTData';
+import {BASE_API_URL} from '../CommonsAPI';
 
 /**
  * Manages everything related to user authentication
  */
 class AuthenticationManager {
-    /**
-     * Base URL of the API
-     * @private
-     */
-    private static readonly BASE_URL: string = 'https://jsiutinfo.alwaysdata.net/api';
-
     /**
      * Listeners for callbacks called when the logged in user changed
      * @private
@@ -49,7 +44,7 @@ class AuthenticationManager {
      * @param jwt JWT to parse
      * @private
      */
-    private static getUserIdFromToken(jwt: string): number | undefined {
+    private static getUserIdFromJWT(jwt: string): number | undefined {
         // Parse the JWT
         const jwtParts = jwt.split('.');
 
@@ -83,7 +78,7 @@ class AuthenticationManager {
      * @param password Password of the new user
      */
     public register(username: string, password: string): Promise<RegisterResponse> {
-        return AuthenticationManager.loginOrRegister(AuthenticationManager.BASE_URL + '/register', username, password)
+        return AuthenticationManager.loginOrRegister(BASE_API_URL + '/register', username, password)
             .then((json) => {
                 const response: RegisterResponse = json;
                 if (!response.error) {
@@ -102,7 +97,7 @@ class AuthenticationManager {
      * @param password Password of the user
      */
     public login(username: string, password: string): Promise<LoginResponse> {
-        return AuthenticationManager.loginOrRegister(AuthenticationManager.BASE_URL + '/login', username, password)
+        return AuthenticationManager.loginOrRegister(BASE_API_URL + '/login', username, password)
             .then((json) => {
                 const response: LoginResponse = json;
                 if (!response.error) {
@@ -130,7 +125,7 @@ class AuthenticationManager {
     /**
      * Gets the authentication token from the cookie
      */
-    public getAuthToken(): string | undefined {
+    public getAuthJWTFromCookie(): string | undefined {
         return document.cookie
             .split('; ')
             .find(row => row.startsWith('AUTH_JWT='))
@@ -142,7 +137,7 @@ class AuthenticationManager {
      */
     public refreshCookie(): void {
         // Refresh the current cookie if there is one set
-        const currentCookie: string | undefined = this.getAuthToken();
+        const currentCookie: string | undefined = this.getAuthJWTFromCookie();
 
         if (currentCookie !== undefined) {
             AuthenticationManager.setAuthCookie(currentCookie);
@@ -153,11 +148,11 @@ class AuthenticationManager {
      * Gets the User ID from the JWT stored in the cookie
      */
     public getUserIdFromCookie(): number | undefined {
-        const authToken = this.getAuthToken();
+        const authToken = this.getAuthJWTFromCookie();
 
         if (authToken !== undefined) {
             // Parse the user ID from the token
-            return AuthenticationManager.getUserIdFromToken(authToken);
+            return AuthenticationManager.getUserIdFromJWT(authToken);
         }
     }
 
@@ -189,8 +184,9 @@ class AuthenticationManager {
      */
     private storeJWT(jwt: string): void {
         // Parse the JWT
-        const userId = AuthenticationManager.getUserIdFromToken(jwt);
+        const userId = AuthenticationManager.getUserIdFromJWT(jwt);
 
+        // Tell the listeners we got a new JWT
         for (const listener of this.onLoggedInUserChangeListeners) {
             listener(userId);
         }

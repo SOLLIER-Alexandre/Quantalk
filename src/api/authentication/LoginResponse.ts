@@ -1,5 +1,5 @@
 /**
- * Status code for a lgoin response
+ * Status code for a login response
  */
 export enum LoginResponseStatus {
     STATUS_REQUEST_ERROR = 1,
