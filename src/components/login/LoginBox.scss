@@ -1,0 +1,18 @@
+.login-box {
+  display: flex;
+  flex-direction: column;
+
+  .button-container {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .button-container > button {
+    flex: 1;
+  }
+
+  .error-message {
+    color: #FF0000;
+  }
+}

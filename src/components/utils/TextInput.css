@@ -1,0 +1,29 @@
+.text-input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-input {
+    border: #00000061 1px solid;
+    padding: 8px;
+    color: #000000DE;
+    border-radius: 4px;
+}
+
+.text-input:focus {
+    border-color: #2196F3;
+    outline: none;
+}
+
+.text-input-error {
+    border-color: #FF0000;
+}
+
+.text-input-error:focus {
+    border-color: #ff5a36;
+}
+
+.error-hint {
+    color: #FF0000;
+    font-size: 0.8rem;
+}

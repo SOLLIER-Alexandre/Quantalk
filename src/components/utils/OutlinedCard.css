@@ -1,0 +1,7 @@
+.outlined-card {
+    border: #E0E0E0 solid 1px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    margin: 8px;
+    padding: 8px;
+}
