@@ -1,0 +1,12 @@
+.logged-in-button {
+  display: flex;
+  flex-direction: row;
+
+  > .material-icons.m-right {
+    margin-right: 4px;
+  }
+
+  > .username-text.m-right {
+    margin-right: 16px;
+  }
+}

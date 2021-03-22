@@ -1,13 +1,14 @@
 import authenticationManager from '../api/authentication/AuthenticationManager';
 import CommonPageLayout from '../components/common_page/CommonPageLayout';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import ChannelAPI from '../api/channel/ChannelAPI';
+import LoggedInButton from '../components/utils/LoggedInButton';
 
 /**
  * The home page of the app
  * @constructor
  */
-const Home = () => {
+const Home: React.FunctionComponent = () => {
     useEffect(() => {
         // Test the channels API
         ChannelAPI.fetchChannels()
@@ -17,7 +18,7 @@ const Home = () => {
     }, []);
 
     return (
-        <CommonPageLayout headerExtra={<p>Hello, Header!</p>}>
+        <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <button onClick={() => {
                 authenticationManager.logout();
             }}>logout

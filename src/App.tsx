@@ -5,9 +5,10 @@ import LoggedOutRoutes from './routes/LoggedOutRoutes';
 import LoggedInRoutes from './routes/LoggedInRoutes';
 
 const App = () => {
-    const userId = useLoggedInUser();
+    // Use logged in user hook
+    const loggedInUser = useLoggedInUser();
 
-    if (userId !== undefined) {
+    if (loggedInUser !== undefined) {
         // User is logged in
         return (
             <Router>
