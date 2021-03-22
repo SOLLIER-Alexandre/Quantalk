@@ -1,24 +1,24 @@
+import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
+
 /**
- * Format for a successful response to a channel get request
+ * Status code for a login response
  */
-interface ChannelGetResponseSuccess {
-    error: false,
-    channels: Array<ChannelGetResponseDataEntry>,
+export enum ChannelGetResponseStatus {
+    STATUS_NEEDS_AUTHENTICATION = 1,
+    STATUS_REQUEST_ERROR,
 }
 
 /**
- * Format for a failed response to a channel get request
+ * Format for a successful response to a channel get request
  */
-interface ChannelGetResponseFailure {
-    error: true,
-    status: number,
-    message: string,
+interface ChannelGetResponseSuccess extends APIResponseSuccess {
+    channels: Array<ChannelGetResponseDataEntry>,
 }
 
 /**
  * Format for a response to a channel get request
  */
-export type ChannelGetResponse = ChannelGetResponseSuccess | ChannelGetResponseFailure;
+export type ChannelGetResponse = ChannelGetResponseSuccess | APIResponseFailure<ChannelGetResponseStatus>;
 
 /**
  * An entry in the channel get response data array

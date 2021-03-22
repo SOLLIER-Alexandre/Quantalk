@@ -1,3 +1,5 @@
+import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
+
 /**
  * Status code for a login response
  */
@@ -9,21 +11,11 @@ export enum LoginResponseStatus {
 /**
  * Format for a successful response to a login request
  */
-interface LoginResponseSuccess {
-    error: false,
+interface LoginResponseSuccess extends APIResponseSuccess {
     token: string,
-}
-
-/**
- * Format for a failed response to a login request
- */
-interface LoginResponseFailure {
-    error: true,
-    status: LoginResponseStatus,
-    message: string,
 }
 
 /**
  * Format for a response to a login request
  */
-export type LoginResponse = LoginResponseSuccess | LoginResponseFailure;
+export type LoginResponse = LoginResponseSuccess | APIResponseFailure<LoginResponseStatus>;

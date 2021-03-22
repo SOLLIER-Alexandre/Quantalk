@@ -1,3 +1,5 @@
+import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
+
 /**
  * Status code for a register response
  */
@@ -9,21 +11,11 @@ export enum RegisterResponseStatus {
 /**
  * Format for a successful response to a register request
  */
-interface RegisterResponseSuccess {
-    error: false,
+interface RegisterResponseSuccess extends APIResponseSuccess {
     token: string,
-}
-
-/**
- * Format for a failed response to a register request
- */
-interface RegisterResponseFailure {
-    error: true,
-    status: RegisterResponseStatus,
-    message: string,
 }
 
 /**
  * Format for a response to a register request
  */
-export type RegisterResponse = RegisterResponseSuccess | RegisterResponseFailure;
+export type RegisterResponse = RegisterResponseSuccess | APIResponseFailure<RegisterResponseStatus>;
