@@ -1,6 +1,6 @@
 import {Redirect, Route, Switch} from 'react-router-dom';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
+import Login from '../pages/logged_out/Login';
+import Register from '../pages/logged_out/Register';
 import React from 'react';
 
 /**

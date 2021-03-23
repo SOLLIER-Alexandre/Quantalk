@@ -1,4 +1,7 @@
-.common-page-layout-content {
+.chat-home-content {
+  display: flex;
+  flex: 1;
+
   > .sidebar {
     background: #F5F5F5;
     padding: 8px;

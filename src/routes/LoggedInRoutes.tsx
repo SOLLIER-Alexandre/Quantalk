@@ -1,6 +1,6 @@
-import {Redirect, Route, Switch} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import React from 'react';
-import Chat from '../pages/Chat';
+import ChatHome from '../pages/logged_in/ChatHome';
 
 /**
  * Routes available for when the user logged in
@@ -9,11 +9,8 @@ import Chat from '../pages/Chat';
 const LoggedInRoutes = () => {
     return (
         <Switch>
-            <Route exact path={'/'}>
-                <Chat/>
-            </Route>
-            <Route path={'*'}>
-                <Redirect to={'/'}/>
+            <Route path={'/'}>
+                <ChatHome/>
             </Route>
         </Switch>
     );
