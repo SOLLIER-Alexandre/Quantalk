@@ -1,0 +1,25 @@
+.channel-item {
+  padding: 4px;
+  border-radius: 4px;
+
+  .channel-title {
+    font-size: 1.2rem;
+  }
+
+  .channel-owned-by {
+    font-size: 0.8rem;
+    color: #000000E0;
+  }
+
+  &.selected {
+    background: #E0E0E0;
+
+    .channel-title {
+      font-weight: 600;
+    }
+  }
+
+  &:hover:not(.selected) {
+    background: #EEEEEE;
+  }
+}

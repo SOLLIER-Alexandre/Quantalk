@@ -1,24 +1,38 @@
 import CommonPageLayout from '../components/common_page/CommonPageLayout';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import ChannelAPI from '../api/channel/ChannelAPI';
 import LoggedInButton from '../components/utils/LoggedInButton';
+import {ChannelGetResponseDataEntry} from '../api/channel/ChannelGetResponse';
+import ChannelList from '../components/chat/channel/ChannelList';
+import './Chat.scss';
 
 /**
  * The home page of the app
  * @constructor
  */
 const Chat: React.FunctionComponent = () => {
+    // Channels state
+    const [channels, setChannels] = useState<Array<ChannelGetResponseDataEntry>>([]);
+
     useEffect(() => {
         // Test the channels API
         ChannelAPI.fetchChannels()
             .then((res) => {
-                console.log(res);
+                if (!res.error) {
+                    setChannels(res.channels);
+                }
             });
     }, []);
 
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
-            <p className={'title-text'}>Chat</p>
+            <div className={'sidebar'}>
+                <ChannelList data={channels} selectedIndex={0}/>
+            </div>
+
+            <div className={'active-chat'}>
+
+            </div>
         </CommonPageLayout>
     );
 };

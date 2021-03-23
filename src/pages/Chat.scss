@@ -1,0 +1,11 @@
+.common-page-layout-content {
+  > .sidebar {
+    background: #F5F5F5;
+    padding: 8px;
+    flex: 1;
+  }
+
+  > .active-chat {
+    flex: 3;
+  }
+}
