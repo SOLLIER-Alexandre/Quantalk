@@ -20,7 +20,7 @@ const CommonPageHeader: React.FunctionComponent<CommonPageHeaderProps> = (props:
     // Get the history hook
     const history = useHistory();
 
-    // On click listener for the header title
+    // Go to the home page when the page title is clicked
     const onHeaderTitleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         // Prevent the default behavior of the anchor link and use react-router routing instead
         e.preventDefault();

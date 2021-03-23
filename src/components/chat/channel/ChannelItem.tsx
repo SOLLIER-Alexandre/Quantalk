@@ -34,7 +34,7 @@ const ChannelItem: React.FunctionComponent<ChannelItemProps> = (props: ChannelIt
     if (props.selected)
         className += ' selected';
 
-    // On click listener for the item
+    // Call the callback in the props with the data
     const onClickListener = () => {
         props.onClickListener?.(props.data);
     };

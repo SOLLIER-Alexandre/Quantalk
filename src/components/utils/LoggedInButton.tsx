@@ -10,7 +10,7 @@ const LoggedInButton: React.FunctionComponent = () => {
     // Use logged in user hook
     const loggedInUser = useLoggedInUser();
 
-    // On logout button click listener
+    // Logout the user when the logout button is clicked
     const onLogoutButtonClickListener = () => {
         authenticationManager.logout();
     };

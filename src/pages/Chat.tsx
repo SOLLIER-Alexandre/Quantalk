@@ -15,7 +15,7 @@ const Chat: React.FunctionComponent = () => {
     const [channels, setChannels] = useState<Array<ChannelGetResponseDataEntry>>([]);
     const [selectedChannelId, setSelectedChannelId] = useState<ChannelGetResponseDataEntry['id'] | undefined>(undefined);
 
-    // On channel item click listener
+    // Select the channel ID that was clicked
     const onChannelClickListener = (idx: number, data: ChannelGetResponseDataEntry) => {
         setSelectedChannelId(data.id);
     };
