@@ -14,6 +14,11 @@ const Chat: React.FunctionComponent = () => {
     // Channels state
     const [channels, setChannels] = useState<Array<ChannelGetResponseDataEntry>>([]);
 
+    // On channel item click listener
+    const onChannelClickListener = (idx: number, data: ChannelGetResponseDataEntry) => {
+        console.log(idx, data);
+    };
+
     useEffect(() => {
         // Test the channels API
         ChannelAPI.fetchChannels()
@@ -27,7 +32,7 @@ const Chat: React.FunctionComponent = () => {
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'sidebar'}>
-                <ChannelList data={channels} selectedIndex={0}/>
+                <ChannelList data={channels} selectedIndex={0} onItemClickListener={onChannelClickListener}/>
             </div>
 
             <div className={'active-chat'}>
