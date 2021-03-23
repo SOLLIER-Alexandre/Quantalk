@@ -13,9 +13,9 @@ interface ChannelListProps {
     data: Array<ChannelGetResponseDataEntry>,
 
     /**
-     * The index of the selected item
+     * The ID of the selected item
      */
-    selectedIndex?: number,
+    selectedId?: ChannelGetResponseDataEntry['id'],
 
     /**
      * Callback called when one of the item is clicked
@@ -34,7 +34,7 @@ const ChannelList: React.FunctionComponent<ChannelListProps> = (props: ChannelLi
     return (
         <div className={'channel-list'}>
             {props.data.map((elem, idx) => {
-                return <ChannelItem data={elem} selected={props.selectedIndex === idx} key={elem.id}
+                return <ChannelItem data={elem} selected={props.selectedId === elem.id} key={elem.id}
                                     onClickListener={(data) => {
                                         props.onItemClickListener?.(idx, data);
                                     }}/>;

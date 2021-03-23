@@ -13,11 +13,11 @@ import './Chat.scss';
 const Chat: React.FunctionComponent = () => {
     // Channels state
     const [channels, setChannels] = useState<Array<ChannelGetResponseDataEntry>>([]);
-    const [selectedChannel, setSelectedChannel] = useState<number | undefined>(undefined);
+    const [selectedChannelId, setSelectedChannelId] = useState<ChannelGetResponseDataEntry['id'] | undefined>(undefined);
 
     // On channel item click listener
     const onChannelClickListener = (idx: number, data: ChannelGetResponseDataEntry) => {
-        setSelectedChannel(idx);
+        setSelectedChannelId(data.id);
     };
 
     useEffect(() => {
@@ -33,7 +33,7 @@ const Chat: React.FunctionComponent = () => {
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'sidebar'}>
-                <ChannelList data={channels} selectedIndex={selectedChannel}
+                <ChannelList data={channels} selectedId={selectedChannelId}
                              onItemClickListener={onChannelClickListener}/>
             </div>
 
