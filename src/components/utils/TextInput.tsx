@@ -45,6 +45,11 @@ interface TextInputProps {
      * Class name for the text input container
      */
     className?: string,
+
+    /**
+     * Reference to the HTML input element
+     */
+    inputRef?: React.Ref<HTMLInputElement>,
 }
 
 /**
@@ -68,7 +73,7 @@ const TextInput: React.FunctionComponent<TextInputProps> = (props: TextInputProp
         <div className={divClassName}>
             <p>{props.title}</p>
             <input type={props.type} autoComplete={props.autoComplete} className={inputClassName}
-                   value={props.value}
+                   value={props.value} ref={props.inputRef}
                    onChange={(e) => {
                        props.onValueChange?.(e.target.value);
                    }}

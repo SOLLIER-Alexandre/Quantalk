@@ -1,0 +1,23 @@
+.add-channel-input {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+
+  > :first-child {
+    flex: 1;
+    margin-right: 4px;
+  }
+
+  > .material-icons {
+    font-size: 30px;
+    color: #00000099;
+
+    &.enabled {
+      color: #2196F3;
+    }
+
+    &:not(.enabled) {
+      cursor: initial;
+    }
+  }
+}

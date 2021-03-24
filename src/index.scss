@@ -55,13 +55,17 @@ h6,
   user-select: none;
 }
 
+@mixin button-like() {
+  @include unselectable;
+  cursor: pointer;
+}
+
 .unselectable {
   @include unselectable;
 }
 
 .button-like {
-  @include unselectable;
-  cursor: pointer;
+  @include button-like;
 }
 
 .filled-button,

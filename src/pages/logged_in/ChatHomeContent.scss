@@ -3,9 +3,18 @@
   flex: 1;
 
   > .sidebar {
+    display: flex;
+    flex-direction: column;
+
     background: #F5F5F5;
     padding: 8px;
     flex: 1;
+
+    > .channel-list {
+      flex: 1 1 auto;
+      height: 0;
+      overflow-y: scroll;
+    }
   }
 
   > .active-chat {

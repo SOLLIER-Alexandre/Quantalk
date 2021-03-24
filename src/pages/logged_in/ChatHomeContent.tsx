@@ -4,6 +4,7 @@ import {ChannelGetResponseDataEntry} from '../../api/channel/ChannelGetResponse'
 import {useHistory, useParams} from 'react-router-dom';
 import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHomeContent.scss';
+import AddChannelInput from '../../components/chat/channel/AddChannelInput';
 
 /**
  * Props passed to the ChatHomeContent component
@@ -32,15 +33,22 @@ const ChatHomeContent: React.FunctionComponent<ChatHomeContentProps> = (props: C
     const history = useHistory();
 
     // Select the channel ID that was clicked
-    const onChannelClickListener = (idx: number, data: ChannelGetResponseDataEntry) => {
+    const onChannelClick = (idx: number, data: ChannelGetResponseDataEntry) => {
         history.push(`/channel/${data.id}`);
+    };
+
+    // Add the channel when the user requires it
+    const onChannelAddButtonClick = (channelName: string) => {
+        // TODO: Add the channel
+        console.log(channelName);
     };
 
     return (
         <div className={'chat-home-content'}>
             <div className={'sidebar'}>
+                <AddChannelInput onAddClick={onChannelAddButtonClick}/>
                 <ChannelList data={props.channels} selectedId={parseInt(params.channelId)}
-                             onItemClickListener={onChannelClickListener}/>
+                             onItemClickListener={onChannelClick}/>
             </div>
 
             <div className={'active-chat'}>
