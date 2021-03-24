@@ -5,6 +5,8 @@ import {useHistory, useParams} from 'react-router-dom';
 import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHomeContent.scss';
 import AddChannelInput from '../../components/chat/channel/AddChannelInput';
+import ChannelAPI from '../../api/channel/ChannelAPI';
+import {LoggedInUserData, useLoggedInUser} from '../../api/authentication/AuthenticationManager';
 
 /**
  * Props passed to the ChatHomeContent component
@@ -32,6 +34,9 @@ const ChatHomeContent: React.FunctionComponent<ChatHomeContentProps> = (props: C
     const params = useParams<ChatChannelFragmentRouteParams>();
     const history = useHistory();
 
+    // Get the logged in user data
+    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+
     // Select the channel ID that was clicked
     const onChannelClick = (idx: number, data: ChannelData) => {
         history.push(`/channel/${data.id}`);
@@ -39,8 +44,9 @@ const ChatHomeContent: React.FunctionComponent<ChatHomeContentProps> = (props: C
 
     // Add the channel when the user requires it
     const onChannelAddButtonClick = (channelName: string) => {
-        // TODO: Add the channel
-        console.log(channelName);
+        if (loggedInUser !== undefined) {
+            ChannelAPI.addChannel(loggedInUser.jwt, channelName);
+        }
     };
 
     return (

@@ -5,6 +5,7 @@ import LoggedInButton from '../../components/utils/LoggedInButton';
 import {ChannelData} from '../../api/channel/ChannelData';
 import {Route, Switch} from 'react-router-dom';
 import ChatHomeContent from './ChatHomeContent';
+import {LoggedInUserData, useLoggedInUser} from '../../api/authentication/AuthenticationManager';
 
 /**
  * The home page of the app
@@ -14,14 +15,19 @@ const ChatHome: React.FunctionComponent = () => {
     // Channels state
     const [channels, setChannels] = useState<Array<ChannelData>>([]);
 
+    // Get the logged in user data
+    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+
     useEffect(() => {
         // Get the available channels and put them in the state
-        ChannelAPI.fetchChannels()
-            .then((res) => {
-                if (!res.error) {
-                    setChannels(res.channels);
-                }
-            });
+        if (loggedInUser !== undefined) {
+            ChannelAPI.fetchChannels(loggedInUser.jwt)
+                .then((res) => {
+                    if (!res.error) {
+                        setChannels(res.channels);
+                    }
+                });
+        }
     }, []);
 
     /*
