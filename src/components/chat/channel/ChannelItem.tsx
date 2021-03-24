@@ -1,6 +1,6 @@
 import React from 'react';
 import './ChannelItem.scss';
-import {ChannelGetResponseDataEntry} from '../../../api/channel/ChannelGetResponse';
+import {ChannelData} from '../../../api/channel/ChannelData';
 
 /**
  * Props for the ChannelItem component
@@ -9,7 +9,7 @@ interface ChannelItemProps {
     /**
      * The data to show in this component
      */
-    data: ChannelGetResponseDataEntry,
+    data: ChannelData,
 
     /**
      * This channel item is the active one
@@ -21,7 +21,7 @@ interface ChannelItemProps {
      *
      * @param data Data associated with the item
      */
-    onClickListener?: (data: ChannelGetResponseDataEntry) => void,
+    onClickListener?: (data: ChannelData) => void,
 }
 
 /**

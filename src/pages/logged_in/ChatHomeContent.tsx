@@ -1,6 +1,6 @@
 import React from 'react';
 import ChannelList from '../../components/chat/channel/ChannelList';
-import {ChannelGetResponseDataEntry} from '../../api/channel/ChannelGetResponse';
+import {ChannelData} from '../../api/channel/ChannelData';
 import {useHistory, useParams} from 'react-router-dom';
 import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHomeContent.scss';
@@ -10,7 +10,7 @@ import AddChannelInput from '../../components/chat/channel/AddChannelInput';
  * Props passed to the ChatHomeContent component
  */
 interface ChatHomeContentProps {
-    channels: Array<ChannelGetResponseDataEntry>,
+    channels: Array<ChannelData>,
 }
 
 /**
@@ -33,7 +33,7 @@ const ChatHomeContent: React.FunctionComponent<ChatHomeContentProps> = (props: C
     const history = useHistory();
 
     // Select the channel ID that was clicked
-    const onChannelClick = (idx: number, data: ChannelGetResponseDataEntry) => {
+    const onChannelClick = (idx: number, data: ChannelData) => {
         history.push(`/channel/${data.id}`);
     };
 

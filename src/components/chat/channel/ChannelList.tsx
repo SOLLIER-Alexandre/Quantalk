@@ -1,5 +1,5 @@
 import React from 'react';
-import {ChannelGetResponseDataEntry} from '../../../api/channel/ChannelGetResponse';
+import {ChannelData} from '../../../api/channel/ChannelData';
 import ChannelItem from './ChannelItem';
 import './ChannelList.scss';
 
@@ -10,12 +10,12 @@ interface ChannelListProps {
     /**
      * Dataset to show in the list
      */
-    data: Array<ChannelGetResponseDataEntry>,
+    data: Array<ChannelData>,
 
     /**
      * The ID of the selected item
      */
-    selectedId?: ChannelGetResponseDataEntry['id'],
+    selectedId?: ChannelData['id'],
 
     /**
      * Callback called when one of the item is clicked
@@ -23,7 +23,7 @@ interface ChannelListProps {
      * @param idx Index of the item in the dataset
      * @param data Data associated with the item
      */
-    onItemClickListener?: (idx: number, data: ChannelGetResponseDataEntry) => void,
+    onItemClickListener?: (idx: number, data: ChannelData) => void,
 }
 
 /**

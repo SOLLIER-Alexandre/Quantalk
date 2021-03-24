@@ -2,7 +2,7 @@ import CommonPageLayout from '../../components/common_page/CommonPageLayout';
 import React, {useEffect, useState} from 'react';
 import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
-import {ChannelGetResponseDataEntry} from '../../api/channel/ChannelGetResponse';
+import {ChannelData} from '../../api/channel/ChannelData';
 import {Route, Switch} from 'react-router-dom';
 import ChatHomeContent from './ChatHomeContent';
 
@@ -12,7 +12,7 @@ import ChatHomeContent from './ChatHomeContent';
  */
 const ChatHome: React.FunctionComponent = () => {
     // Channels state
-    const [channels, setChannels] = useState<Array<ChannelGetResponseDataEntry>>([]);
+    const [channels, setChannels] = useState<Array<ChannelData>>([]);
 
     useEffect(() => {
         // Get the available channels and put them in the state
