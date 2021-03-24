@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import TextInput from '../utils/TextInput';
 import './RegisterBox.scss';
 
@@ -28,9 +28,9 @@ interface RegisterBoxProps {
  */
 const RegisterBox: React.FunctionComponent<RegisterBoxProps> = (props: RegisterBoxProps) => {
     // Form state
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+    const username = useRef<string>('');
+    const password = useRef<string>('');
+    const passwordConfirmation = useRef<string>('');
 
     const [usernameError, setUsernameError] = useState<boolean>(false);
     const [passwordError, setPasswordError] = useState<boolean>(false);
@@ -42,19 +42,19 @@ const RegisterBox: React.FunctionComponent<RegisterBoxProps> = (props: RegisterB
         let error: boolean = false;
 
         // Check that the username is not empty
-        if (username.trim() === '') {
+        if (username.current.trim() === '') {
             setUsernameError(true);
             error = true;
         }
 
         // Check that the password is not empty
-        if (password.trim() === '') {
+        if (password.current.trim() === '') {
             setPasswordError(true);
             error = true;
         }
 
         // Check that the password confirmation is not empty and that it's matching with the password field
-        if (passwordConfirmation.trim() === '') {
+        if (passwordConfirmation.current.trim() === '') {
             setPasswordConfirmationError(true);
             setPasswordConfirmationErrorMessage('La confirmation du mot de passe ne peut être vide');
             error = true;
@@ -72,20 +72,21 @@ const RegisterBox: React.FunctionComponent<RegisterBoxProps> = (props: RegisterB
         setPasswordError(false);
         setPasswordConfirmationError(false);
 
-        props.onRegisterButtonClick?.(username, password);
+        props.onRegisterButtonClick?.(username.current, password.current);
     };
 
     return (
         <div className={'register-box'}>
-            <TextInput title={'Nom d\'utilisateur'} onValueChange={setUsername}
+            <TextInput title={'Nom d\'utilisateur'} onValueChange={(value => username.current = value)}
                        type={'username'} autoComplete={'username'}
                        error={usernameError} errorText={'Le nom d\'utilisateur ne peut être vide'}/>
 
-            <TextInput title={'Mot de passe'} onValueChange={setPassword}
+            <TextInput title={'Mot de passe'} onValueChange={value => password.current = value}
                        type={'password'} autoComplete={'password'} className={'m-top'}
                        error={passwordError} errorText={'Le mot de passe ne peut être vide'}/>
 
-            <TextInput title={'Confirmation du mot de passe'} onValueChange={setPasswordConfirmation}
+            <TextInput title={'Confirmation du mot de passe'}
+                       onValueChange={value => passwordConfirmation.current = value}
                        type={'password'} autoComplete={'password'} className={'m-top'}
                        error={passwordConfirmationError} errorText={passwordConfirmationErrorMessage}/>
 
