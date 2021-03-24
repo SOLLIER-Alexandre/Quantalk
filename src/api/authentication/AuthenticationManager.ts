@@ -5,7 +5,7 @@ import {JWTData} from './JWTData';
 /**
  * Interface describing the data about the logged in user
  */
-interface LoggedInUserData {
+export interface LoggedInUserData {
     jwt: string,
     id: number,
     username?: string,

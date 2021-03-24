@@ -35,7 +35,9 @@ const AddChannelInput: React.FunctionComponent<AddChannelInputProps> = (props: A
     const onAddButtonClick = () => {
         if (addButtonEnabled && textInputRef.current !== null) {
             props.onAddClick?.(textInputRef.current.value);
+
             textInputRef.current.value = '';
+            setAddButtonEnabled(false);
         }
     };
 
