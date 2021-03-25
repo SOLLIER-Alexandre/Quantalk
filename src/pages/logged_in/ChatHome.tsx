@@ -1,5 +1,5 @@
 import CommonPageLayout from '../../components/common_page/CommonPageLayout';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
 import {ChannelData} from '../../api/channel/ChannelData';
@@ -9,6 +9,7 @@ import AddChannelInput from '../../components/chat/channel/AddChannelInput';
 import ChannelList from '../../components/chat/channel/ChannelList';
 import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHome.scss';
+import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 
 /**
  * Route parameters for this page
@@ -25,8 +26,9 @@ export interface ChatHomeRouteParams {
  * @constructor
  */
 const ChatHome: React.FunctionComponent = () => {
-    // Channels state
+    // Page state and ref
     const [channels, setChannels] = useState<Array<ChannelData>>([]);
+    const websocketManager = useRef<WebSocketManager>();
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -58,6 +60,15 @@ const ChatHome: React.FunctionComponent = () => {
                 });
         }
     }, [loggedInUser]);
+
+    useEffect(() => {
+        // Instantiate a new WebSocketManager
+        websocketManager.current = new WebSocketManager();
+
+        return () => {
+            websocketManager.current?.disconnect();
+        };
+    }, []);
 
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
