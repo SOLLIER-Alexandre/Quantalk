@@ -1,4 +1,5 @@
 import {WS_URL} from '../CommonsAPI';
+import {WebSocketMessage} from './WebSocketMessage';
 
 /**
  * Manages the WS connection to the server
@@ -20,7 +21,7 @@ export class WebSocketManager {
      * Listeners for when a message arrives from the websocket
      * @private
      */
-    private readonly onMessageListeners: Array<() => void>;
+    private readonly onMessageListeners: Array<(message: WebSocketMessage) => void>;
 
     /**
      * Constructs a new WebSocketManager
@@ -38,8 +39,10 @@ export class WebSocketManager {
         };
 
         this.websocket.onmessage = (event) => {
-            // TODO: Parse the message, call the listeners
-            console.log(event.data);
+            // Call every on message listeners
+            for (const listener of this.onMessageListeners) {
+                listener(JSON.parse(event.data));
+            }
         };
     }
 
@@ -73,7 +76,7 @@ export class WebSocketManager {
      *
      * @param listener Listener to add
      */
-    public addOnMessageListener(listener: () => void): void {
+    public addOnMessageListener(listener: (message: WebSocketMessage) => void): void {
         this.onMessageListeners.push(listener);
     }
 
@@ -82,7 +85,7 @@ export class WebSocketManager {
      *
      * @param listener Listener to remove
      */
-    public removeOnMessageListener(listener: () => void): void {
+    public removeOnMessageListener(listener: (message: WebSocketMessage) => void): void {
         this.onMessageListeners.filter((elem) => elem !== listener);
     }
 }

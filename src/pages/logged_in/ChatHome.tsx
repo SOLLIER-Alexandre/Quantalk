@@ -10,6 +10,7 @@ import ChannelList from '../../components/chat/channel/ChannelList';
 import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
+import {WebSocketMessage} from '../../api/websocket/WebSocketMessage';
 
 /**
  * Route parameters for this page
@@ -28,7 +29,7 @@ export interface ChatHomeRouteParams {
 const ChatHome: React.FunctionComponent = () => {
     // Page state and ref
     const [channels, setChannels] = useState<Array<ChannelData>>([]);
-    const websocketManager = useRef<WebSocketManager>();
+    const websocketManager = useRef<WebSocketManager | undefined>(undefined);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -62,10 +63,27 @@ const ChatHome: React.FunctionComponent = () => {
     }, [loggedInUser]);
 
     useEffect(() => {
+        // Add the message listener
+        const onWebSocketMessage = (msg: WebSocketMessage) => {
+            if (msg.type === 'channelCreated') {
+                // A channel has been created
+                setChannels((prev) => {
+                    return [...prev, {
+                        id: msg.id,
+                        owner: msg.owner,
+                        ownerUsername: msg.ownerUsername,
+                        title: msg.title,
+                    }];
+                });
+            }
+        };
+
         // Instantiate a new WebSocketManager
         websocketManager.current = new WebSocketManager();
+        websocketManager.current.addOnMessageListener(onWebSocketMessage);
 
         return () => {
+            websocketManager.current?.removeOnMessageListener(onWebSocketMessage);
             websocketManager.current?.disconnect();
         };
     }, []);
