@@ -1,6 +1,6 @@
 import {useParams} from 'react-router-dom';
 import React from 'react';
-import {ChatChannelFragmentRouteParams} from './ChatHomeContent';
+import {ChatHomeRouteParams} from './ChatHome';
 
 /**
  * Fragment of the chat home page containing the currently selected chat channel
@@ -8,7 +8,7 @@ import {ChatChannelFragmentRouteParams} from './ChatHomeContent';
  */
 const ChatChannelFragment: React.FunctionComponent = () => {
     // Get the route params
-    const params = useParams<ChatChannelFragmentRouteParams>();
+    const params = useParams<ChatHomeRouteParams>();
 
     return (
         <div>

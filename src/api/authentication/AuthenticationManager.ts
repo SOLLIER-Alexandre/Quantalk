@@ -190,9 +190,7 @@ class AuthenticationManager {
      * @param listener Listener to remove
      */
     public removeOnLoggedInUserChangeListener(listener: (loggedInUser?: LoggedInUserData) => void): void {
-        this.onLoggedInUserChangeListeners = this.onLoggedInUserChangeListeners.filter((item) => {
-            return item !== listener;
-        });
+        this.onLoggedInUserChangeListeners = this.onLoggedInUserChangeListeners.filter((item) => item !== listener);
     }
 }
 

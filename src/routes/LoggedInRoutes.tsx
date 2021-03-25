@@ -9,7 +9,7 @@ import ChatHome from '../pages/logged_in/ChatHome';
 const LoggedInRoutes = () => {
     return (
         <Switch>
-            <Route path={'/'}>
+            <Route path={['/channel/:channelId', '/']}>
                 <ChatHome/>
             </Route>
         </Switch>
