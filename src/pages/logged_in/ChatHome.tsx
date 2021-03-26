@@ -93,19 +93,19 @@ const ChatHome: React.FunctionComponent = () => {
         {
             id: 0,
             content: 'Bonjour',
-            senderId: 0,
+            sender: 0,
             senderUsername: 'Kurutwo',
         },
         {
             id: 1,
             content: 'Hallo',
-            senderId: 0,
+            sender: 0,
             senderUsername: 'Kurutwo',
         },
         {
             id: 2,
             content: 'yes',
-            senderId: 11,
+            sender: 11,
             senderUsername: 'Kuruyia',
         },
     ];

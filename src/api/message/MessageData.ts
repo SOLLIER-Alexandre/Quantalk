@@ -4,6 +4,6 @@
 export interface MessageData {
     id: number,
     content: string,
-    senderId: number,
+    sender: number,
     senderUsername: string,
 }
