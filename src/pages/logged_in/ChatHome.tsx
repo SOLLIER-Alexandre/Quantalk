@@ -10,7 +10,8 @@ import ChannelList from '../../components/chat/channel/ChannelList';
 import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 import {WebSocketMessage} from '../../api/websocket/WebSocketMessage';
-import MessageItem from '../../components/chat/message/MessageItem';
+import {MessageData} from '../../api/message/MessageData';
+import MessageList from '../../components/chat/message/MessageList';
 
 /**
  * Route parameters for this page
@@ -88,6 +89,27 @@ const ChatHome: React.FunctionComponent = () => {
         };
     }, []);
 
+    const f: Array<MessageData> = [
+        {
+            id: 0,
+            content: 'Bonjour',
+            senderId: 0,
+            senderUsername: 'Kurutwo',
+        },
+        {
+            id: 1,
+            content: 'Hallo',
+            senderId: 0,
+            senderUsername: 'Kurutwo',
+        },
+        {
+            id: 2,
+            content: 'yes',
+            senderId: 11,
+            senderUsername: 'Kuruyia',
+        },
+    ];
+
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'chat-home'}>
@@ -98,18 +120,7 @@ const ChatHome: React.FunctionComponent = () => {
                 </div>
 
                 <div className={'active-chat'}>
-                    <MessageItem data={{
-                        id: 0,
-                        content: 'Bonjour',
-                        senderId: 0,
-                        senderUsername: 'Kurutwo',
-                    }}/>
-                    <MessageItem data={{
-                        id: 0,
-                        content: 'Hallo',
-                        senderId: 0,
-                        senderUsername: 'Kurutwo',
-                    }} userSent/>
+                    <MessageList data={f} highlightedUserId={loggedInUser?.id}/>
                 </div>
             </div>
         </CommonPageLayout>
