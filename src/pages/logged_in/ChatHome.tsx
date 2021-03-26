@@ -12,6 +12,7 @@ import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 import {WebSocketMessage} from '../../api/websocket/WebSocketMessage';
 import {MessageData} from '../../api/message/MessageData';
 import MessageList from '../../components/chat/message/MessageList';
+import MessageAPI from '../../api/message/MessageAPI';
 
 /**
  * Route parameters for this page
@@ -28,9 +29,12 @@ export interface ChatHomeRouteParams {
  * @constructor
  */
 const ChatHome: React.FunctionComponent = () => {
+    // TODO: Cleanup this, put content fetcher into their own components
+
     // Page state and ref
-    const [channels, setChannels] = useState<Array<ChannelData>>([]);
     const websocketManager = useRef<WebSocketManager | undefined>(undefined);
+    const [channels, setChannels] = useState<Array<ChannelData>>([]);
+    const [messages, setMessages] = useState<Array<MessageData>>([]);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -47,15 +51,17 @@ const ChatHome: React.FunctionComponent = () => {
     // Add the channel when the user requires it
     const onChannelAddButtonClick = (channelName: string) => {
         if (loggedInUser !== undefined) {
+            // TODO: Handle errors
             ChannelAPI.addChannel(loggedInUser.jwt, channelName);
         }
     };
 
     useEffect(() => {
-        // Get the available channels and put them in the state
+        // Fetch the available channels and put them in the state
         if (loggedInUser !== undefined) {
             ChannelAPI.fetchChannels(loggedInUser.jwt)
                 .then((res) => {
+                    // TODO: Handle errors
                     if (!res.error) {
                         setChannels(res.channels);
                     }
@@ -89,27 +95,24 @@ const ChatHome: React.FunctionComponent = () => {
         };
     }, []);
 
-    const f: Array<MessageData> = [
-        {
-            id: 0,
-            content: 'Bonjour',
-            sender: 0,
-            senderUsername: 'Kurutwo',
-        },
-        {
-            id: 1,
-            content: 'Hallo',
-            sender: 0,
-            senderUsername: 'Kurutwo',
-        },
-        {
-            id: 2,
-            content: 'yes',
-            sender: 11,
-            senderUsername: 'Kuruyia',
-        },
-    ];
+    useEffect(() => {
+        // Fetch the messages from the selected channel and put them in the state
+        if (loggedInUser !== undefined && params.channelId !== undefined) {
+            const channelId: number = parseInt(params.channelId);
 
+            if (!isNaN(channelId)) {
+                MessageAPI.fetchMessages(loggedInUser.jwt, channelId)
+                    .then((res) => {
+                        // TODO: Handle errors
+                        if (!res.error) {
+                            setMessages(res.messages);
+                        }
+                    });
+            }
+        }
+    }, [loggedInUser, params.channelId]);
+
+    // TODO: Show placeholder in active-chat when no channel is selected
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'chat-home'}>
@@ -120,7 +123,7 @@ const ChatHome: React.FunctionComponent = () => {
                 </div>
 
                 <div className={'active-chat'}>
-                    <MessageList data={f} highlightedUserId={loggedInUser?.id}/>
+                    <MessageList data={messages} highlightedUserId={loggedInUser?.id}/>
                 </div>
             </div>
         </CommonPageLayout>

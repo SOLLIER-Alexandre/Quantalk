@@ -4,6 +4,18 @@ import MessageItem from './MessageItem';
 import './MessageList.scss';
 
 /**
+ * Formats a message date to something we can show
+ * @param date
+ */
+const formatDate = (date: Date): string => {
+    return date.getDate().toString().padStart(2, '0') + '/' +
+        date.getMonth().toString().padStart(2, '0') + '/' +
+        date.getFullYear() + ' ' +
+        date.getHours().toString().padStart(2, '0') + ':' +
+        date.getMinutes().toString().padStart(2, '0');
+};
+
+/**
  * Props for the MessageList component
  */
 interface MessageListProps {
@@ -39,7 +51,7 @@ const MessageList: React.FunctionComponent<MessageListProps> = (props: MessageLi
                     return <React.Fragment>
                         <div className={'metadata-container' + userSentClass}>
                             <p className={'username'}>@{elem.senderUsername}</p>
-                            <p className={'date'}>_date_</p>
+                            <p className={'date'}>{formatDate(elem.sendDate)}</p>
                         </div>
 
                         <MessageItem data={elem} userSent={props.highlightedUserId === elem.sender} key={elem.id}/>

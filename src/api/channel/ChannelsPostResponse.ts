@@ -6,6 +6,7 @@ import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
 export enum ChannelsPostResponseStatus {
     STATUS_NEEDS_AUTHENTICATION = 1,
     STATUS_REQUEST_ERROR,
+    CREATION_ERROR,
 }
 
 /**
