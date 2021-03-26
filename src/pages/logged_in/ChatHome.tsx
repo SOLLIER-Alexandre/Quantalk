@@ -7,10 +7,10 @@ import {useHistory, useParams} from 'react-router-dom';
 import {LoggedInUserData, useLoggedInUser} from '../../api/authentication/AuthenticationManager';
 import AddChannelInput from '../../components/chat/channel/AddChannelInput';
 import ChannelList from '../../components/chat/channel/ChannelList';
-import ChatChannelFragment from './ChatChannelFragment';
 import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 import {WebSocketMessage} from '../../api/websocket/WebSocketMessage';
+import MessageItem from '../../components/chat/message/MessageItem';
 
 /**
  * Route parameters for this page
@@ -98,7 +98,18 @@ const ChatHome: React.FunctionComponent = () => {
                 </div>
 
                 <div className={'active-chat'}>
-                    <ChatChannelFragment/>
+                    <MessageItem data={{
+                        id: 0,
+                        content: 'Bonjour',
+                        senderId: 0,
+                        senderUsername: 'Kurutwo',
+                    }}/>
+                    <MessageItem data={{
+                        id: 0,
+                        content: 'Hallo',
+                        senderId: 0,
+                        senderUsername: 'Kurutwo',
+                    }} userSent/>
                 </div>
             </div>
         </CommonPageLayout>

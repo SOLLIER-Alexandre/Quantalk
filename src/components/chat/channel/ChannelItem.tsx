@@ -26,6 +26,8 @@ interface ChannelItemProps {
 
 /**
  * Shows a single chat channel
+ *
+ * @param props Component props
  * @constructor
  */
 const ChannelItem: React.FunctionComponent<ChannelItemProps> = (props: ChannelItemProps) => {

@@ -1,0 +1,9 @@
+.message-item {
+  padding: 8px;
+  background: #F5F5F5;
+
+  &.user-sent {
+    background: #3D84F7;
+    color: white;
+  }
+}
