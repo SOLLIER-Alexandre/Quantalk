@@ -48,13 +48,13 @@ const MessageList: React.FunctionComponent<MessageListProps> = (props: MessageLi
                     // Align the text to the end if the message is sent by the highlighted user
                     const userSentClass: string = elem.sender === props.highlightedUserId ? ' user-sent' : '';
 
-                    return <React.Fragment>
+                    return <React.Fragment key={elem.id}>
                         <div className={'metadata-container' + userSentClass}>
                             <p className={'username'}>@{elem.senderUsername}</p>
                             <p className={'date'}>{formatDate(elem.sendDate)}</p>
                         </div>
 
-                        <MessageItem data={elem} userSent={props.highlightedUserId === elem.sender} key={elem.id}/>
+                        <MessageItem data={elem} userSent={props.highlightedUserId === elem.sender}/>
                     </React.Fragment>;
                 }
 
