@@ -11,6 +11,11 @@ interface SendMessageInputProps {
      * @param message Message contents
      */
     onSend?: (message: string) => void,
+
+    /**
+     * Show the error text because the message could not be sent
+     */
+    error?: boolean,
 }
 
 /**
@@ -46,10 +51,16 @@ const SendMessageInput: React.FunctionComponent<SendMessageInputProps> = (props:
 
     return (
         <div className={'send-message-input'}>
-            <input type={'text'} placeholder={'Envoyer un message...'} onChange={onInputValueChange}
-                   ref={(ref) => textInputRef.current = ref}/>
+            {props.error ?
+                <p className={'error-hint'}>Votre message n'a pas pu être envoyé</p> :
+                null}
 
-            <span className={buttonClassName} onClick={onSendButtonClick}>send</span>
+            <div className={'input-container'}>
+                <input type={'text'} placeholder={'Envoyer un message...'} onChange={onInputValueChange}
+                       ref={(ref) => textInputRef.current = ref}/>
+
+                <span className={buttonClassName} onClick={onSendButtonClick}>send</span>
+            </div>
         </div>
     );
 };

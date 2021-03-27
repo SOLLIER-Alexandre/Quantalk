@@ -32,6 +32,7 @@ const ChatHome: React.FunctionComponent = () => {
     // Page state and ref
     const websocketManager = useRef<WebSocketManager | undefined>(undefined);
     const [channelCreationError, setChannelCreationError] = useState<boolean>(false);
+    const [messageSendError, setMessageSendError] = useState<boolean>(false);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -58,8 +59,10 @@ const ChatHome: React.FunctionComponent = () => {
     // Send the message to the server
     const onMessageSend = (message: string) => {
         if (loggedInUser !== undefined && params.channelId !== undefined) {
-            // TODO: Handle errors
-            MessageAPI.sendMessage(loggedInUser.jwt, parseInt(params.channelId), message);
+            MessageAPI.sendMessage(loggedInUser.jwt, parseInt(params.channelId), message)
+                .then((res) => {
+                    setMessageSendError(res.error);
+                });
         }
     };
 
@@ -91,7 +94,7 @@ const ChatHome: React.FunctionComponent = () => {
                 {params.channelId !== undefined ?
                     <>
                         <ManagedMessageList channelId={parseInt(params.channelId)}/>
-                        <SendMessageInput onSend={onMessageSend}/>
+                        <SendMessageInput onSend={onMessageSend} error={messageSendError}/>
                     </> :
                     <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}
             </div>
