@@ -1,0 +1,16 @@
+.managed-message-list-error {
+  display: flex;
+  padding: 8px 0;
+
+  > .icon-message {
+    flex: 1;
+
+    > .material-icons {
+      font-size: 48px;
+    }
+
+    > p {
+      font-size: 1rem;
+    }
+  }
+}

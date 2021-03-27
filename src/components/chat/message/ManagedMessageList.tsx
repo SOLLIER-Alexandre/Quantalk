@@ -3,6 +3,8 @@ import MessageList from './MessageList';
 import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/AuthenticationManager';
 import {MessageData} from '../../../api/message/MessageData';
 import MessageAPI from '../../../api/message/MessageAPI';
+import './ManagedMessageList.scss';
+import IconMessage from '../../utils/IconMessage';
 
 /**
  * Props for the ManagedMessageList component
@@ -21,8 +23,9 @@ interface ManagedMessageListProps {
  * @constructor
  */
 const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (props: ManagedMessageListProps) => {
-    // Messages state
+    // Component state
     const [messages, setMessages] = useState<Array<MessageData>>([]);
+    const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -32,13 +35,23 @@ const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (pr
         if (loggedInUser !== undefined && props.channelId !== undefined && !isNaN(props.channelId)) {
             MessageAPI.fetchMessages(loggedInUser.jwt, props.channelId)
                 .then((res) => {
-                    // TODO: Handle errors
                     if (!res.error) {
                         setMessages(res.messages);
                     }
+
+                    setFetchError(res.error);
                 });
         }
     }, [loggedInUser, props.channelId]);
+
+    if (fetchError) {
+        // Show an error message if an error occurred while fetching messages
+        return (
+            <div className={'managed-message-list-error'}>
+                <IconMessage iconName={'warning'} message={'Les messages n\'ont pas pu être récupérés'}/>
+            </div>
+        );
+    }
 
     return (
         <MessageList data={messages} highlightedUserId={loggedInUser?.id}/>
