@@ -1,5 +1,5 @@
 import CommonPageLayout from '../../components/common_page/CommonPageLayout';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
 import {ChannelData} from '../../api/channel/ChannelData';
@@ -28,6 +28,7 @@ export interface ChatHomeRouteParams {
 const ChatHome: React.FunctionComponent = () => {
     // Page state and ref
     const websocketManager = useRef<WebSocketManager | undefined>(undefined);
+    const [channelCreationError, setChannelCreationError] = useState<boolean>(false);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -39,8 +40,10 @@ const ChatHome: React.FunctionComponent = () => {
     // Add the channel when the user requires it
     const onChannelAddButtonClick = (channelName: string) => {
         if (loggedInUser !== undefined) {
-            // TODO: Handle errors
-            ChannelAPI.addChannel(loggedInUser.jwt, channelName);
+            ChannelAPI.addChannel(loggedInUser.jwt, channelName)
+                .then((res) => {
+                    setChannelCreationError(res.error);
+                });
         }
     };
 
@@ -69,7 +72,7 @@ const ChatHome: React.FunctionComponent = () => {
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'sidebar'}>
-                <AddChannelInput onAddClick={onChannelAddButtonClick}/>
+                <AddChannelInput onAddClick={onChannelAddButtonClick} error={channelCreationError}/>
                 <ManagedChannelList websocket={websocketManager.current} onChannelClickListener={onChannelClick}
                                     selectedChannelId={selectedChannelId}/>
             </div>

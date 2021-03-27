@@ -10,6 +10,11 @@ interface AddChannelInputProps {
      * Callback called when the add button is clicked
      */
     onAddClick?: (channelName: string) => void,
+
+    /**
+     * Show the error text because the channel could not be created
+     */
+    error?: boolean,
 }
 
 /**
@@ -44,7 +49,8 @@ const AddChannelInput: React.FunctionComponent<AddChannelInputProps> = (props: A
     return (
         <div className={'add-channel-input'}>
             <TextInput title={'Créer un salon'} onValueChange={onTextInputValueChange}
-                       inputRef={(ref) => textInputRef.current = ref}/>
+                       inputRef={(ref) => textInputRef.current = ref}
+                       errorText={'Le salon n\'a pas pu être créé'} error={props.error}/>
             <span className={buttonClassName} onClick={onAddButtonClick}>add</span>
         </div>
     );
