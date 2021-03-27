@@ -1,5 +1,5 @@
 import CommonPageLayout from '../../components/common_page/CommonPageLayout';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
 import {ChannelData} from '../../api/channel/ChannelData';
@@ -8,10 +8,8 @@ import {LoggedInUserData, useLoggedInUser} from '../../api/authentication/Authen
 import AddChannelInput from '../../components/chat/channel/AddChannelInput';
 import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
-import {MessageData} from '../../api/message/MessageData';
-import MessageList from '../../components/chat/message/MessageList';
-import MessageAPI from '../../api/message/MessageAPI';
 import ManagedChannelList from '../../components/chat/channel/ManagedChannelList';
+import ManagedMessageList from '../../components/chat/message/ManagedMessageList';
 
 /**
  * Route parameters for this page
@@ -20,7 +18,7 @@ export interface ChatHomeRouteParams {
     /**
      * ID of the chat channel to show
      */
-    channelId: string,
+    channelId?: string,
 }
 
 /**
@@ -28,11 +26,8 @@ export interface ChatHomeRouteParams {
  * @constructor
  */
 const ChatHome: React.FunctionComponent = () => {
-    // TODO: Cleanup this, put content fetcher into their own components
-
     // Page state and ref
     const websocketManager = useRef<WebSocketManager | undefined>(undefined);
-    const [messages, setMessages] = useState<Array<MessageData>>([]);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -63,23 +58,6 @@ const ChatHome: React.FunctionComponent = () => {
         };
     }, []);
 
-    useEffect(() => {
-        // Fetch the messages from the selected channel and put them in the state
-        if (loggedInUser !== undefined && params.channelId !== undefined) {
-            const channelId: number = parseInt(params.channelId);
-
-            if (!isNaN(channelId)) {
-                MessageAPI.fetchMessages(loggedInUser.jwt, channelId)
-                    .then((res) => {
-                        // TODO: Handle errors
-                        if (!res.error) {
-                            setMessages(res.messages);
-                        }
-                    });
-            }
-        }
-    }, [loggedInUser, params.channelId]);
-
     // TODO: Show placeholder in active-chat when no channel is selected
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
@@ -90,7 +68,9 @@ const ChatHome: React.FunctionComponent = () => {
                 </div>
 
                 <div className={'active-chat'}>
-                    <MessageList data={messages} highlightedUserId={loggedInUser?.id}/>
+                    {params.channelId !== undefined ?
+                        <ManagedMessageList channelId={parseInt(params.channelId)}/> :
+                        <p>oui</p>}
                 </div>
             </div>
         </CommonPageLayout>

@@ -85,8 +85,15 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
         }
     }, [props.websocket]);
 
+    // Get the selected channel ID
+    let selectedId: number | undefined = undefined;
+
+    if (params.channelId !== undefined) {
+        selectedId = parseInt(params.channelId);
+    }
+
     return (
-        <ChannelList data={channels} selectedId={parseInt(params.channelId)}
+        <ChannelList data={channels} selectedId={selectedId}
                      onItemClickListener={onChannelClick}/>
     );
 };
