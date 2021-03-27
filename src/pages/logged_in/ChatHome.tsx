@@ -61,17 +61,15 @@ const ChatHome: React.FunctionComponent = () => {
     // TODO: Show placeholder in active-chat when no channel is selected
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
-            <div className={'chat-home'}>
-                <div className={'sidebar'}>
-                    <AddChannelInput onAddClick={onChannelAddButtonClick}/>
-                    <ManagedChannelList websocket={websocketManager.current} onChannelClickListener={onChannelClick}/>
-                </div>
+            <div className={'sidebar'}>
+                <AddChannelInput onAddClick={onChannelAddButtonClick}/>
+                <ManagedChannelList websocket={websocketManager.current} onChannelClickListener={onChannelClick}/>
+            </div>
 
-                <div className={'active-chat'}>
-                    {params.channelId !== undefined ?
-                        <ManagedMessageList channelId={parseInt(params.channelId)}/> :
-                        <p>oui</p>}
-                </div>
+            <div className={'active-chat'}>
+                {params.channelId !== undefined ?
+                    <ManagedMessageList channelId={parseInt(params.channelId)}/> :
+                    <p>oui</p>}
             </div>
         </CommonPageLayout>
     );
