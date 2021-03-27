@@ -11,6 +11,8 @@ import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 import ManagedChannelList from '../../components/chat/channel/ManagedChannelList';
 import ManagedMessageList from '../../components/chat/message/ManagedMessageList';
 import IconMessage from '../../components/utils/IconMessage';
+import SendMessageInput from '../../components/chat/message/SendMessageInput';
+import MessageAPI from '../../api/message/MessageAPI';
 
 /**
  * Route parameters for this page
@@ -53,6 +55,14 @@ const ChatHome: React.FunctionComponent = () => {
         history.push(`/channel/${data.id}`);
     };
 
+    // Send the message to the server
+    const onMessageSend = (message: string) => {
+        if (loggedInUser !== undefined && params.channelId !== undefined) {
+            // TODO: Handle errors
+            MessageAPI.sendMessage(loggedInUser.jwt, parseInt(params.channelId), message);
+        }
+    };
+
     useEffect(() => {
         // Instantiate a new WebSocketManager
         websocketManager.current = new WebSocketManager();
@@ -79,7 +89,10 @@ const ChatHome: React.FunctionComponent = () => {
 
             <div className={'messages'}>
                 {params.channelId !== undefined ?
-                    <ManagedMessageList channelId={parseInt(params.channelId)}/> :
+                    <>
+                        <ManagedMessageList channelId={parseInt(params.channelId)}/>
+                        <SendMessageInput onSend={onMessageSend}/>
+                    </> :
                     <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}
             </div>
         </CommonPageLayout>

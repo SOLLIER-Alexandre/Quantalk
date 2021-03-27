@@ -22,7 +22,7 @@ interface AddChannelInputProps {
  * @constructor
  */
 const AddChannelInput: React.FunctionComponent<AddChannelInputProps> = (props: AddChannelInputProps) => {
-    // Add button state
+    // Component state and ref
     const [addButtonEnabled, setAddButtonEnabled] = useState<boolean>(false);
     const textInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -51,6 +51,7 @@ const AddChannelInput: React.FunctionComponent<AddChannelInputProps> = (props: A
             <TextInput title={'Créer un salon'} onValueChange={onTextInputValueChange}
                        inputRef={(ref) => textInputRef.current = ref}
                        errorText={'Le salon n\'a pas pu être créé'} error={props.error}/>
+
             <span className={buttonClassName} onClick={onAddButtonClick}>add</span>
         </div>
     );

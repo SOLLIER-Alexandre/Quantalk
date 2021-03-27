@@ -29,5 +29,9 @@
       height: 0;
       overflow-y: scroll;
     }
+
+    > .icon-message {
+      flex: 1;
+    }
   }
 }

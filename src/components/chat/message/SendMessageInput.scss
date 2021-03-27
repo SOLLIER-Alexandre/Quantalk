@@ -1,0 +1,41 @@
+.send-message-input {
+  display: flex;
+  flex-direction: row;
+
+  padding: 8px;
+
+  > input {
+    flex: 1;
+
+    padding: 8px;
+    background: #E0E0E0;
+    font-size: 1rem;
+
+    border: none;
+    border-radius: 8px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  > .material-icons {
+    margin-left: 8px;
+    padding: 8px;
+    border-radius: 50%;
+
+    background: #E0E0E0;
+
+    transition: color 150ms linear, background-color 150ms linear;
+
+    &.enabled {
+      color: #FFFFFF;
+      background: #3D84F7;
+    }
+
+    &:not(.enabled) {
+      cursor: initial;
+      color: #000000A0;
+    }
+  }
+}
