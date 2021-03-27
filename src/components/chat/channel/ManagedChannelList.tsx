@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import ChannelList from './ChannelList';
 import {ChannelData} from '../../../api/channel/ChannelData';
 import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/AuthenticationManager';
-import {useParams} from 'react-router-dom';
-import {ChatHomeRouteParams} from '../../../pages/logged_in/ChatHome';
 import ChannelAPI from '../../../api/channel/ChannelAPI';
 import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
 import {WebSocketMessage} from '../../../api/websocket/WebSocketMessage';
@@ -16,6 +14,11 @@ interface ManagedChannelListProps {
      * WebSocket connection to where get channel events from
      */
     websocket?: WebSocketManager,
+
+    /**
+     * ID of the selected chat channel
+     */
+    selectedChannelId?: number,
 
     /**
      * Callback called when a channel was clicked
@@ -37,9 +40,6 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
-
-    // Get route params and history hook
-    const params = useParams<ChatHomeRouteParams>();
 
     // Pass the channel that was clicked to the parent
     const onChannelClick = (idx: number, data: ChannelData) => {
@@ -85,15 +85,8 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
         }
     }, [props.websocket]);
 
-    // Get the selected channel ID
-    let selectedId: number | undefined = undefined;
-
-    if (params.channelId !== undefined) {
-        selectedId = parseInt(params.channelId);
-    }
-
     return (
-        <ChannelList data={channels} selectedId={selectedId}
+        <ChannelList data={channels} selectedId={props.selectedChannelId}
                      onItemClickListener={onChannelClick}/>
     );
 };
