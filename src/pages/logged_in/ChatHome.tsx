@@ -77,9 +77,11 @@ const ChatHome: React.FunctionComponent = () => {
                                     selectedChannelId={selectedChannelId}/>
             </div>
 
-            {params.channelId !== undefined ?
-                <ManagedMessageList channelId={parseInt(params.channelId)}/> :
-                <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}
+            <div className={'messages'}>
+                {params.channelId !== undefined ?
+                    <ManagedMessageList channelId={parseInt(params.channelId)}/> :
+                    <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}
+            </div>
         </CommonPageLayout>
     );
 };
