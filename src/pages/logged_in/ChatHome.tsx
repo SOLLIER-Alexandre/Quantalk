@@ -10,6 +10,7 @@ import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
 import ManagedChannelList from '../../components/chat/channel/ManagedChannelList';
 import ManagedMessageList from '../../components/chat/message/ManagedMessageList';
+import IconMessage from '../../components/utils/IconMessage';
 
 /**
  * Route parameters for this page
@@ -68,7 +69,6 @@ const ChatHome: React.FunctionComponent = () => {
         selectedChannelId = parseInt(params.channelId);
     }
 
-    // TODO: Show placeholder in active-chat when no channel is selected
     return (
         <CommonPageLayout headerExtra={<LoggedInButton/>}>
             <div className={'sidebar'}>
@@ -77,11 +77,9 @@ const ChatHome: React.FunctionComponent = () => {
                                     selectedChannelId={selectedChannelId}/>
             </div>
 
-            <div className={'active-chat'}>
-                {params.channelId !== undefined ?
-                    <ManagedMessageList channelId={parseInt(params.channelId)}/> :
-                    <p>oui</p>}
-            </div>
+            {params.channelId !== undefined ?
+                <ManagedMessageList channelId={parseInt(params.channelId)}/> :
+                <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}
         </CommonPageLayout>
     );
 };

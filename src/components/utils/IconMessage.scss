@@ -1,0 +1,16 @@
+.icon-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  > .material-icons {
+    font-size: 96px;
+    color: #000000C0;
+  }
+
+  > p {
+    font-size: 1.3rem;
+    color: #000000A0;
+  }
+}
