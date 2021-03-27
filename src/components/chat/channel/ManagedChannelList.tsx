@@ -5,6 +5,8 @@ import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/Aut
 import ChannelAPI from '../../../api/channel/ChannelAPI';
 import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
 import {WebSocketMessage} from '../../../api/websocket/WebSocketMessage';
+import IconMessage from '../../utils/IconMessage';
+import './ManagedChannelList.scss';
 
 /**
  * Props for the ManagedChannelList component
@@ -35,8 +37,9 @@ interface ManagedChannelListProps {
  * @constructor
  */
 const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (props: ManagedChannelListProps) => {
-    // Channels state
+    // Component state
     const [channels, setChannels] = useState<Array<ChannelData>>([]);
+    const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data
     const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
@@ -51,10 +54,11 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
         if (loggedInUser !== undefined) {
             ChannelAPI.fetchChannels(loggedInUser.jwt)
                 .then((res) => {
-                    // TODO: Handle errors
                     if (!res.error) {
                         setChannels(res.channels);
                     }
+
+                    setFetchError(res.error);
                 });
         }
     }, [loggedInUser]);
@@ -84,6 +88,15 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
             };
         }
     }, [props.websocket]);
+
+    if (fetchError) {
+        // Show an error message if an error occurred while fetching channels
+        return (
+            <div className={'managed-channel-list-error'}>
+                <IconMessage iconName={'warning'} message={'Les salons n\'ont pas pu être récupérés'}/>
+            </div>
+        );
+    }
 
     return (
         <ChannelList data={channels} selectedId={props.selectedChannelId}

@@ -25,7 +25,7 @@ interface IconMessageProps {
 const IconMessage: React.FunctionComponent<IconMessageProps> = (props: IconMessageProps) => {
     return (
         <div className={'icon-message'}>
-            <span className={'material-icons'}>{props.iconName}</span>
+            <span className={'material-icons unselectable'}>{props.iconName}</span>
             <p>{props.message}</p>
         </div>
     );
