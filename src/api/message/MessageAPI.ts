@@ -1,5 +1,6 @@
 import {MessagesFetchResponse} from './MessageFetchResponse';
 import {BASE_API_URL} from '../CommonsAPI';
+import {MessageSendResponse} from './MessageSendResponse';
 
 /**
  * Interacts with the server chat messages API
@@ -29,6 +30,32 @@ export default abstract class MessageAPI {
 
                     return value;
                 });
+            });
+    }
+
+    /**
+     * Sends a message to the specified chat channel to the server
+     *
+     * @param authToken Authentication token to perform the request with
+     * @param channelId ID of the channel to send the message to
+     * @param content Content of the message
+     */
+    public static sendMessage(authToken: string, channelId: number, content: string): Promise<MessageSendResponse> {
+        return fetch(BASE_API_URL + '/messages/' + channelId, {
+            method: 'POST',
+            body: JSON.stringify({
+                content: content,
+            }),
+            headers: {
+                'Authorization': 'Bearer ' + authToken,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                return json;
             });
     }
 }
