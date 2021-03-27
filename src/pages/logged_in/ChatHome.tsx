@@ -70,7 +70,7 @@ const ChatHome: React.FunctionComponent = () => {
     }
 
     return (
-        <CommonPageLayout headerExtra={<LoggedInButton/>}>
+        <CommonPageLayout contentClassName={'chat-home'} headerExtra={<LoggedInButton/>}>
             <div className={'sidebar'}>
                 <AddChannelInput onAddClick={onChannelAddButtonClick} error={channelCreationError}/>
                 <ManagedChannelList websocket={websocketManager.current} onChannelClickListener={onChannelClick}

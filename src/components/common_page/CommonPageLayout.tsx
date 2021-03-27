@@ -12,6 +12,11 @@ interface CommonPageLayoutProps {
     className?: string,
 
     /**
+     * Name of the classes for the content div
+     */
+    contentClassName?: string,
+
+    /**
      * ID of the root div
      */
     id?: string,
@@ -39,11 +44,15 @@ const CommonPageLayout: React.FunctionComponent<CommonPageLayoutProps> = (props:
     if (props.className !== undefined)
         className += ' ' + props.className;
 
+    let contentClassName: string = 'common-page-layout-content';
+    if (props.contentClassName !== undefined)
+        contentClassName += ' ' + props.contentClassName;
+
     return (
         <div className={className} id={props.id}>
             <CommonPageHeader rightNode={props.headerExtra}/>
 
-            <div className={'common-page-layout-content'}>
+            <div className={contentClassName}>
                 {props.children}
             </div>
         </div>
