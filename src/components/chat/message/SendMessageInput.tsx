@@ -34,18 +34,31 @@ const SendMessageInput: React.FunctionComponent<SendMessageInputProps> = (props:
     if (sendButtonEnabled)
         buttonClassName += ' enabled';
 
+    const sendMessage = () => {
+        if (textInputRef.current !== null && textInputRef.current?.value.trim().length > 0) {
+            props.onSend?.(textInputRef.current.value);
+
+            textInputRef.current.value = '';
+            setSendButtonEnabled(false);
+        }
+    };
+
     // Set the add button enabled depending on the text inside the input
     const onInputValueChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSendButtonEnabled(e.target.value.trim() !== '');
     };
 
-    // Call the callback in the props when the send button is clicked and enabled
+    // Send the message when the button is clicked
     const onSendButtonClick = () => {
-        if (sendButtonEnabled && textInputRef.current !== null) {
-            props.onSend?.(textInputRef.current.value);
+        if (sendButtonEnabled) {
+            sendMessage();
+        }
+    };
 
-            textInputRef.current.value = '';
-            setSendButtonEnabled(false);
+    // Send the message when the enter key is pressed
+    const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.code === 'Enter') {
+            sendMessage();
         }
     };
 
@@ -57,7 +70,7 @@ const SendMessageInput: React.FunctionComponent<SendMessageInputProps> = (props:
 
             <div className={'input-container'}>
                 <input type={'text'} placeholder={'Envoyer un message...'} onChange={onInputValueChange}
-                       ref={(ref) => textInputRef.current = ref}/>
+                       ref={(ref) => textInputRef.current = ref} onKeyDown={onInputKeyDown}/>
 
                 <span className={buttonClassName} onClick={onSendButtonClick}>send</span>
             </div>
