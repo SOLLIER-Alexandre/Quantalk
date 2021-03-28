@@ -31,6 +31,8 @@ export interface ChatHomeRouteParams {
 const ChatHome: React.FunctionComponent = () => {
     // Page state and ref
     const websocketManager = useRef<WebSocketManager | undefined>(undefined);
+    const [websocketLoading, setWebsocketLoading] = useState<boolean>(true);
+
     const [channelCreationError, setChannelCreationError] = useState<boolean>(false);
     const [messageSendError, setMessageSendError] = useState<boolean>(false);
 
@@ -102,6 +104,7 @@ const ChatHome: React.FunctionComponent = () => {
             };
 
             websocketManager.current?.getOnOpenListenable().addListener(onWebSocketOpenListener);
+            setWebsocketLoading(false);
         }
     }, [loggedInUser, selectedChannelId]);
 
@@ -114,6 +117,15 @@ const ChatHome: React.FunctionComponent = () => {
             });
         }
     }, [selectedChannelId]);
+
+    // Show a loading screen while we're connecting to the websocket
+    if (websocketLoading) {
+        return (
+            <CommonPageLayout contentClassName={'chat-home-loading'} headerExtra={<LoggedInButton/>}>
+                <IconMessage iconName={'autorenew'} message={'Connexion au serveur...'}/>
+            </CommonPageLayout>
+        );
+    }
 
     return (
         <CommonPageLayout contentClassName={'chat-home'} headerExtra={<LoggedInButton/>}>

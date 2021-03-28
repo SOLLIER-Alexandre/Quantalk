@@ -35,3 +35,11 @@
     }
   }
 }
+
+.chat-home-loading {
+  display: flex;
+
+  > .icon-message {
+    flex: 1;
+  }
+}
