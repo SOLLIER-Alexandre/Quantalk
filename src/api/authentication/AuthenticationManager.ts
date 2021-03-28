@@ -202,6 +202,7 @@ export const useLoggedInUser = (): LoggedInUserData | undefined => {
         };
 
         authenticationManager.getOnLoggedInUserChangeListenable().addListener(loggedInUserChangeListener);
+
         return () => {
             authenticationManager.getOnLoggedInUserChangeListenable().removeListener(loggedInUserChangeListener);
         };

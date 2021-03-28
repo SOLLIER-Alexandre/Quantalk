@@ -3,7 +3,7 @@ export default class Listenable<T extends Function> {
      * Listeners registered to this listenable object
      * @private
      */
-    private readonly listeners: Array<T>;
+    private listeners: Array<T>;
 
     /**
      * Instantiate a new Listenable
@@ -27,13 +27,8 @@ export default class Listenable<T extends Function> {
      * @param listener Listener to remove
      */
     public removeListener(listener: T): void {
-        // Find the listener in the array
-        let index: number = this.listeners.indexOf(listener);
-
-        if (index !== -1) {
-            // Remove the listener
-            this.listeners.splice(0);
-        }
+        // Remove the listener
+        this.listeners = this.listeners.filter((elem) => elem !== listener);
     }
 
     /**
