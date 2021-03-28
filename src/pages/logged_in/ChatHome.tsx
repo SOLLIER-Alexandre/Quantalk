@@ -67,13 +67,27 @@ const ChatHome: React.FunctionComponent = () => {
     };
 
     useEffect(() => {
-        // Instantiate a new WebSocketManager
-        websocketManager.current = new WebSocketManager();
+        if (loggedInUser !== undefined && websocketManager.current === undefined) {
+            // Instantiate a new WebSocketManager
+            websocketManager.current = new WebSocketManager();
 
-        return () => {
-            websocketManager.current?.disconnect();
-        };
-    }, []);
+            // Send the auth token when the connection is open
+            const onWebSocketOpenListener = () => {
+                websocketManager.current?.send({
+                    type: 'authentication',
+                    token: loggedInUser.jwt,
+                });
+
+                websocketManager.current?.removeOnOpenListener(onWebSocketOpenListener);
+            };
+
+            websocketManager.current?.addOnOpenListener(onWebSocketOpenListener);
+
+            return () => {
+                websocketManager.current?.disconnect();
+            };
+        }
+    }, [loggedInUser]);
 
     // Get the selected channel ID
     let selectedChannelId: number | undefined = undefined;

@@ -1,5 +1,6 @@
 import {WS_URL} from '../CommonsAPI';
 import {WebSocketIncomingMessage} from './WebSocketIncomingMessage';
+import {WebSocketOutgoingMessage} from './WebSocketOutgoingMessage';
 
 /**
  * Manages the WS connection to the server
@@ -18,6 +19,12 @@ export class WebSocketManager {
     private readonly onErrorListeners: Array<() => void>;
 
     /**
+     * Listeners for the onopen event on the websocket
+     * @private
+     */
+    private readonly onOpenListeners: Array<() => void>;
+
+    /**
      * Listeners for when a message arrives from the websocket
      * @private
      */
@@ -28,8 +35,16 @@ export class WebSocketManager {
      */
     constructor() {
         this.onErrorListeners = new Array<() => void>();
+        this.onOpenListeners = new Array<() => void>();
         this.onMessageListeners = new Array<() => void>();
         this.websocket = new WebSocket(WS_URL);
+
+        this.websocket.onopen = () => {
+            // Call every on open listeners
+            for (const listener of this.onOpenListeners) {
+                listener();
+            }
+        };
 
         this.websocket.onerror = () => {
             // Call every on error listeners
@@ -51,6 +66,31 @@ export class WebSocketManager {
      */
     public disconnect(): void {
         this.websocket.close();
+    }
+
+    /**
+     * Sends a message to the server
+     */
+    public send(message: WebSocketOutgoingMessage): void {
+        this.websocket.send(JSON.stringify(message));
+    }
+
+    /**
+     * Adds an event listener for when the websocket fired the open event
+     *
+     * @param listener Listener to add
+     */
+    public addOnOpenListener(listener: () => void): void {
+        this.onOpenListeners.push(listener);
+    }
+
+    /**
+     * Removes an event listener for when the websocket fired the open event
+     *
+     * @param listener Listener to remove
+     */
+    public removeOnOpenListener(listener: () => void): void {
+        this.onOpenListeners.filter((elem) => elem !== listener);
     }
 
     /**
