@@ -26,6 +26,41 @@ export interface ChannelCreatedWebSocketIncomingMessage extends CommonWebSocketM
 }
 
 /**
+ * Message received from the WebSocket when a message has been sent
+ */
+export interface MessageSentWebSocketIncomingMessage extends CommonWebSocketMessage<'messageSent'> {
+    /**
+     * ID of the sent message
+     */
+    id: number,
+
+    /**
+     * ID of the message sender
+     */
+    sender: number,
+
+    /**
+     * Username of the message sender
+     */
+    senderUsername: string,
+
+    /**
+     * ID of the channel the message was sent in
+     */
+    channel: number,
+
+    /**
+     * Message contents
+     */
+    content: string,
+
+    /**
+     * Date when the message was sent
+     */
+    sendDate: number,
+}
+
+/**
  * Message formats received from the WebSocket
  */
-export type WebSocketIncomingMessage = ChannelCreatedWebSocketIncomingMessage;
+export type WebSocketIncomingMessage = ChannelCreatedWebSocketIncomingMessage | MessageSentWebSocketIncomingMessage;

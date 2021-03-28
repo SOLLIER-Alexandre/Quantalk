@@ -82,10 +82,6 @@ const ChatHome: React.FunctionComponent = () => {
             };
 
             websocketManager.current?.addOnOpenListener(onWebSocketOpenListener);
-
-            return () => {
-                websocketManager.current?.disconnect();
-            };
         }
     }, [loggedInUser]);
 
@@ -107,7 +103,8 @@ const ChatHome: React.FunctionComponent = () => {
             <div className={'messages'}>
                 {params.channelId !== undefined ?
                     <>
-                        <ManagedMessageList channelId={parseInt(params.channelId)}/>
+                        <ManagedMessageList channelId={parseInt(params.channelId)}
+                                            websocket={websocketManager.current}/>
                         <SendMessageInput onSend={onMessageSend} error={messageSendError}/>
                     </> :
                     <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}

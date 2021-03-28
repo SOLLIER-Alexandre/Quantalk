@@ -5,11 +5,18 @@ import {MessageData} from '../../../api/message/MessageData';
 import MessageAPI from '../../../api/message/MessageAPI';
 import './ManagedMessageList.scss';
 import IconMessage from '../../utils/IconMessage';
+import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
+import {WebSocketIncomingMessage} from '../../../api/websocket/WebSocketIncomingMessage';
 
 /**
  * Props for the ManagedMessageList component
  */
 interface ManagedMessageListProps {
+    /**
+     * WebSocket connection to where get message sent events from
+     */
+    websocket?: WebSocketManager,
+
     /**
      *  ID of the channel to get messages from
      */
@@ -23,8 +30,6 @@ interface ManagedMessageListProps {
  * @constructor
  */
 const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (props: ManagedMessageListProps) => {
-    // TODO: Support message reception with websocket
-
     // Component state
     const [messages, setMessages] = useState<Array<MessageData>>([]);
     const [fetchError, setFetchError] = useState<boolean>(false);
@@ -45,6 +50,34 @@ const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (pr
                 });
         }
     }, [loggedInUser, props.channelId]);
+
+    useEffect(() => {
+        if (props.websocket !== undefined) {
+            // Listen for message sent events on the websocket
+            const onWebSocketMessage = (msg: WebSocketIncomingMessage) => {
+                console.log(msg);
+                if (msg.type === 'messageSent' && msg.channel === props.channelId) {
+                    // A message has been sent
+                    setMessages((prev) => {
+                        return [...prev, {
+                            id: msg.id,
+                            content: msg.content,
+                            sender: msg.sender,
+                            senderUsername: msg.senderUsername,
+                            sendDate: new Date(msg.sendDate),
+                        }];
+                    });
+                }
+            };
+
+            props.websocket.addOnMessageListener(onWebSocketMessage);
+
+            return () => {
+                // Remove the listener when we're finished
+                props.websocket?.removeOnMessageListener(onWebSocketMessage);
+            };
+        }
+    }, [props.websocket]);
 
     if (fetchError) {
         // Show an error message if an error occurred while fetching messages
