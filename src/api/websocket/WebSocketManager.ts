@@ -1,5 +1,5 @@
 import {WS_URL} from '../CommonsAPI';
-import {WebSocketMessage} from './WebSocketMessage';
+import {WebSocketIncomingMessage} from './WebSocketIncomingMessage';
 
 /**
  * Manages the WS connection to the server
@@ -21,7 +21,7 @@ export class WebSocketManager {
      * Listeners for when a message arrives from the websocket
      * @private
      */
-    private readonly onMessageListeners: Array<(message: WebSocketMessage) => void>;
+    private readonly onMessageListeners: Array<(message: WebSocketIncomingMessage) => void>;
 
     /**
      * Constructs a new WebSocketManager
@@ -76,7 +76,7 @@ export class WebSocketManager {
      *
      * @param listener Listener to add
      */
-    public addOnMessageListener(listener: (message: WebSocketMessage) => void): void {
+    public addOnMessageListener(listener: (message: WebSocketIncomingMessage) => void): void {
         this.onMessageListeners.push(listener);
     }
 
@@ -85,7 +85,7 @@ export class WebSocketManager {
      *
      * @param listener Listener to remove
      */
-    public removeOnMessageListener(listener: (message: WebSocketMessage) => void): void {
+    public removeOnMessageListener(listener: (message: WebSocketIncomingMessage) => void): void {
         this.onMessageListeners.filter((elem) => elem !== listener);
     }
 }

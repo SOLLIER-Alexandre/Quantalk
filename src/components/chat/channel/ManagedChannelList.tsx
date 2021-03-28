@@ -4,9 +4,9 @@ import {ChannelData} from '../../../api/channel/ChannelData';
 import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/AuthenticationManager';
 import ChannelAPI from '../../../api/channel/ChannelAPI';
 import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
-import {WebSocketMessage} from '../../../api/websocket/WebSocketMessage';
 import IconMessage from '../../utils/IconMessage';
 import './ManagedChannelList.scss';
+import {WebSocketIncomingMessage} from '../../../api/websocket/WebSocketIncomingMessage';
 
 /**
  * Props for the ManagedChannelList component
@@ -66,7 +66,7 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
     useEffect(() => {
         if (props.websocket !== undefined) {
             // Listen for channel events on the websocket
-            const onWebSocketMessage = (msg: WebSocketMessage) => {
+            const onWebSocketMessage = (msg: WebSocketIncomingMessage) => {
                 if (msg.type === 'channelCreated') {
                     // A channel has been created
                     setChannels((prev) => {
