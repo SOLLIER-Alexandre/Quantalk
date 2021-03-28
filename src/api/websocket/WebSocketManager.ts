@@ -76,6 +76,13 @@ export class WebSocketManager {
     }
 
     /**
+     * Gets the ready state of the websocket
+     */
+    public getReadyState(): number {
+        return this.websocket.readyState;
+    }
+
+    /**
      * Adds an event listener for when the websocket fired the open event
      *
      * @param listener Listener to add

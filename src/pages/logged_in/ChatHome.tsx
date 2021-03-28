@@ -78,16 +78,24 @@ const ChatHome: React.FunctionComponent = () => {
                     token: loggedInUser.jwt,
                 });
 
+                // Subscribe to the selected channel if any
+                if (params.channelId !== undefined) {
+                    websocketManager.current?.send({
+                        type: 'subscribe',
+                        channelId: parseInt(params.channelId),
+                    });
+                }
+
                 websocketManager.current?.removeOnOpenListener(onWebSocketOpenListener);
             };
 
             websocketManager.current?.addOnOpenListener(onWebSocketOpenListener);
         }
-    }, [loggedInUser]);
+    }, [loggedInUser, params.channelId]);
 
     useEffect(() => {
         // Subscribe to the channel that was switched
-        if (params.channelId !== undefined) {
+        if (params.channelId !== undefined && websocketManager.current?.getReadyState() === WebSocket.OPEN) {
             websocketManager.current?.send({
                 type: 'subscribe',
                 channelId: parseInt(params.channelId),
