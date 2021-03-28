@@ -85,6 +85,16 @@ const ChatHome: React.FunctionComponent = () => {
         }
     }, [loggedInUser]);
 
+    useEffect(() => {
+        // Subscribe to the channel that was switched
+        if (params.channelId !== undefined) {
+            websocketManager.current?.send({
+                type: 'subscribe',
+                channelId: parseInt(params.channelId),
+            });
+        }
+    }, [params.channelId]);
+
     // Get the selected channel ID
     let selectedChannelId: number | undefined = undefined;
 
@@ -101,10 +111,9 @@ const ChatHome: React.FunctionComponent = () => {
             </div>
 
             <div className={'messages'}>
-                {params.channelId !== undefined ?
+                {selectedChannelId !== undefined ?
                     <>
-                        <ManagedMessageList channelId={parseInt(params.channelId)}
-                                            websocket={websocketManager.current}/>
+                        <ManagedMessageList channelId={selectedChannelId} websocket={websocketManager.current}/>
                         <SendMessageInput onSend={onMessageSend} error={messageSendError}/>
                     </> :
                     <IconMessage iconName={'list'} message={'Sélectionnez un salon pour commencer'}/>}

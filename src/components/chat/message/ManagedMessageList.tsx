@@ -55,7 +55,6 @@ const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (pr
         if (props.websocket !== undefined) {
             // Listen for message sent events on the websocket
             const onWebSocketMessage = (msg: WebSocketIncomingMessage) => {
-                console.log(msg);
                 if (msg.type === 'messageSent' && msg.channel === props.channelId) {
                     // A message has been sent
                     setMessages((prev) => {
@@ -77,7 +76,7 @@ const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (pr
                 props.websocket?.removeOnMessageListener(onWebSocketMessage);
             };
         }
-    }, [props.websocket]);
+    }, [props.websocket, props.channelId]);
 
     if (fetchError) {
         // Show an error message if an error occurred while fetching messages
