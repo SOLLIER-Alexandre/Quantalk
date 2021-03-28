@@ -23,6 +23,8 @@ interface ManagedMessageListProps {
  * @constructor
  */
 const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (props: ManagedMessageListProps) => {
+    // TODO: Support message reception with websocket
+
     // Component state
     const [messages, setMessages] = useState<Array<MessageData>>([]);
     const [fetchError, setFetchError] = useState<boolean>(false);

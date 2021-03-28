@@ -4,18 +4,20 @@
 
   .channel-title {
     font-size: 1.2rem;
+    transition: font-variation-settings 150ms linear;
   }
 
   .channel-owned-by {
     font-size: 0.8rem;
     color: #000000E0;
+    margin-top: 1px;
   }
 
   &.selected {
     background: #E0E0E0;
 
     .channel-title {
-      font-weight: 600;
+      font-variation-settings: "MONO" 0, "CASL" 0.5, "wght" 500, "slnt" 0, "CRSV" 0.5;
     }
   }
 

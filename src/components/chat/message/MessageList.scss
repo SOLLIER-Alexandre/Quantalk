@@ -21,13 +21,14 @@
     }
 
     > .username {
-      font-weight: 600;
+      font-variation-settings: "MONO" 0, "CASL" 0, "wght" 600, "slnt" 0, "CRSV" 0.5;
     }
 
     > .date {
       margin-left: 8px;
       font-size: 0.8rem;
       color: #000000B0;
+      font-variation-settings: "MONO" 0.5, "CASL" 0, "wght" 400, "slnt" 0, "CRSV" 0.5;
     }
   }
 }
