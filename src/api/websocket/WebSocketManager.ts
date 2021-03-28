@@ -1,6 +1,7 @@
 import {WS_URL} from '../CommonsAPI';
 import {WebSocketIncomingMessage} from './WebSocketIncomingMessage';
 import {WebSocketOutgoingMessage} from './WebSocketOutgoingMessage';
+import Listenable from '../../utils/Listenable';
 
 /**
  * Manages the WS connection to the server
@@ -13,59 +14,34 @@ export class WebSocketManager {
     private websocket: WebSocket;
 
     /**
-     * Listeners for the onerror event on the websocket
+     * Listenable for the onopen event on the websocket
      * @private
      */
-    private readonly onErrorListeners: Array<() => void>;
-
-    /**
-     * Listeners for the onopen event on the websocket
-     * @private
-     */
-    private readonly onOpenListeners: Array<() => void>;
+    private readonly onOpenListenable: Listenable<() => void>;
 
     /**
      * Listeners for when a message arrives from the websocket
      * @private
      */
-    private readonly onMessageListeners: Array<(message: WebSocketIncomingMessage) => void>;
+    private readonly onMessageListenable: Listenable<(message: WebSocketIncomingMessage) => void>;
 
     /**
      * Constructs a new WebSocketManager
      */
     constructor() {
-        this.onErrorListeners = new Array<() => void>();
-        this.onOpenListeners = new Array<() => void>();
-        this.onMessageListeners = new Array<() => void>();
+        this.onOpenListenable = new Listenable<() => void>();
+        this.onMessageListenable = new Listenable<(message: WebSocketIncomingMessage) => void>();
         this.websocket = new WebSocket(WS_URL);
 
         this.websocket.onopen = () => {
-            // Call every on open listeners
-            for (const listener of this.onOpenListeners) {
-                listener();
-            }
-        };
-
-        this.websocket.onerror = () => {
-            // Call every on error listeners
-            for (const listener of this.onErrorListeners) {
-                listener();
-            }
+            // Notify the listenable
+            this.onOpenListenable.notify();
         };
 
         this.websocket.onmessage = (event) => {
-            // Call every on message listeners
-            for (const listener of this.onMessageListeners) {
-                listener(JSON.parse(event.data));
-            }
+            // Notify the listenable
+            this.onMessageListenable.notify(JSON.parse(event.data));
         };
-    }
-
-    /**
-     * Disconnects the websocket from the server
-     */
-    public disconnect(): void {
-        this.websocket.close();
     }
 
     /**
@@ -83,56 +59,16 @@ export class WebSocketManager {
     }
 
     /**
-     * Adds an event listener for when the websocket fired the open event
-     *
-     * @param listener Listener to add
+     * Returns the listenable for the websocket onopen event
      */
-    public addOnOpenListener(listener: () => void): void {
-        this.onOpenListeners.push(listener);
+    public getOnOpenListenable(): Listenable<() => void> {
+        return this.onOpenListenable;
     }
 
     /**
-     * Removes an event listener for when the websocket fired the open event
-     *
-     * @param listener Listener to remove
+     * Returns the listenable for the websocket onmessage event
      */
-    public removeOnOpenListener(listener: () => void): void {
-        this.onOpenListeners.filter((elem) => elem !== listener);
-    }
-
-    /**
-     * Adds an event listener for when an error is fired on the websocket
-     *
-     * @param listener Listener to add
-     */
-    public addOnErrorListener(listener: () => void): void {
-        this.onErrorListeners.push(listener);
-    }
-
-    /**
-     * Removes an event listener for when an error is fired on the websocket
-     *
-     * @param listener Listener to remove
-     */
-    public removeOnErrorListener(listener: () => void): void {
-        this.onErrorListeners.filter((elem) => elem !== listener);
-    }
-
-    /**
-     * Adds an event listener for when a message is received on the websocket
-     *
-     * @param listener Listener to add
-     */
-    public addOnMessageListener(listener: (message: WebSocketIncomingMessage) => void): void {
-        this.onMessageListeners.push(listener);
-    }
-
-    /**
-     * Removes an event listener for when a message is received on the websocket
-     *
-     * @param listener Listener to remove
-     */
-    public removeOnMessageListener(listener: (message: WebSocketIncomingMessage) => void): void {
-        this.onMessageListeners.filter((elem) => elem !== listener);
+    public getOnMessageListenable(): Listenable<(message: WebSocketIncomingMessage) => void> {
+        return this.onMessageListenable;
     }
 }

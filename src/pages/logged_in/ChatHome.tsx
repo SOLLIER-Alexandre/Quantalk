@@ -41,6 +41,18 @@ const ChatHome: React.FunctionComponent = () => {
     const params = useParams<ChatHomeRouteParams>();
     const history = useHistory();
 
+    // Get the selected channel ID
+    let selectedChannelId: number | undefined = undefined;
+
+    if (params.channelId !== undefined) {
+        selectedChannelId = parseInt(params.channelId);
+
+        // We don't want NaN
+        if (isNaN(selectedChannelId)) {
+            selectedChannelId = undefined;
+        }
+    }
+
     // Add the channel when the user requires it
     const onChannelAddButtonClick = (channelName: string) => {
         if (loggedInUser !== undefined) {
@@ -58,8 +70,8 @@ const ChatHome: React.FunctionComponent = () => {
 
     // Send the message to the server
     const onMessageSend = (message: string) => {
-        if (loggedInUser !== undefined && params.channelId !== undefined) {
-            MessageAPI.sendMessage(loggedInUser.jwt, parseInt(params.channelId), message)
+        if (loggedInUser !== undefined && selectedChannelId !== undefined) {
+            MessageAPI.sendMessage(loggedInUser.jwt, selectedChannelId, message)
                 .then((res) => {
                     setMessageSendError(res.error);
                 });
@@ -79,36 +91,29 @@ const ChatHome: React.FunctionComponent = () => {
                 });
 
                 // Subscribe to the selected channel if any
-                if (params.channelId !== undefined) {
+                if (selectedChannelId !== undefined) {
                     websocketManager.current?.send({
                         type: 'subscribe',
-                        channelId: parseInt(params.channelId),
+                        channelId: selectedChannelId,
                     });
                 }
 
-                websocketManager.current?.removeOnOpenListener(onWebSocketOpenListener);
+                websocketManager.current?.getOnOpenListenable().removeListener(onWebSocketOpenListener);
             };
 
-            websocketManager.current?.addOnOpenListener(onWebSocketOpenListener);
+            websocketManager.current?.getOnOpenListenable().addListener(onWebSocketOpenListener);
         }
-    }, [loggedInUser, params.channelId]);
+    }, [loggedInUser, selectedChannelId]);
 
     useEffect(() => {
         // Subscribe to the channel that was switched
-        if (params.channelId !== undefined && websocketManager.current?.getReadyState() === WebSocket.OPEN) {
+        if (selectedChannelId !== undefined && websocketManager.current?.getReadyState() === WebSocket.OPEN) {
             websocketManager.current?.send({
                 type: 'subscribe',
-                channelId: parseInt(params.channelId),
+                channelId: selectedChannelId,
             });
         }
-    }, [params.channelId]);
-
-    // Get the selected channel ID
-    let selectedChannelId: number | undefined = undefined;
-
-    if (params.channelId !== undefined) {
-        selectedChannelId = parseInt(params.channelId);
-    }
+    }, [selectedChannelId]);
 
     return (
         <CommonPageLayout contentClassName={'chat-home'} headerExtra={<LoggedInButton/>}>

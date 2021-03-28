@@ -80,11 +80,11 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
                 }
             };
 
-            props.websocket.addOnMessageListener(onWebSocketMessage);
+            props.websocket.getOnMessageListenable().addListener(onWebSocketMessage);
 
             return () => {
                 // Remove the listener when we're finished
-                props.websocket?.removeOnMessageListener(onWebSocketMessage);
+                props.websocket?.getOnMessageListenable().removeListener(onWebSocketMessage);
             };
         }
     }, [props.websocket]);

@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import AuthenticationAPI from './AuthenticationAPI';
 import {JWTData} from './JWTData';
+import Listenable from '../../utils/Listenable';
 
 /**
  * Interface describing the data about the logged in user
@@ -25,12 +26,14 @@ class AuthenticationManager {
      * Listeners for callbacks called when the logged in user changed
      * @private
      */
-    private onLoggedInUserChangeListeners: Array<(loggedInUser?: LoggedInUserData) => void> = [];
+    private readonly onLoggedInUserChangeListenable: Listenable<(loggedInUser?: LoggedInUserData) => void>;
 
     /**
      * Constructs a new AuthenticationManager
      */
     constructor() {
+        this.onLoggedInUserChangeListenable = new Listenable<(loggedInUser?: LoggedInUserData) => void>();
+
         // Get the JWT from the cookie
         const authCookie = AuthenticationManager.getAuthCookie();
 
@@ -143,9 +146,7 @@ class AuthenticationManager {
         this.loggedInUser = loggedInUser;
 
         // Tell the listeners we got a new JWT
-        for (const listener of this.onLoggedInUserChangeListeners) {
-            listener(this.loggedInUser);
-        }
+        this.onLoggedInUserChangeListenable.notify(this.loggedInUser);
     }
 
     /**
@@ -176,21 +177,10 @@ class AuthenticationManager {
     }
 
     /**
-     * Adds a new callback called when the logged in user changes to the listeners
-     *
-     * @param listener Listener to add
+     * Gets the listenable for when the logged in user has changed
      */
-    public addOnLoggedInUserChangeListener(listener: (loggedInUser?: LoggedInUserData) => void): void {
-        this.onLoggedInUserChangeListeners.push(listener);
-    }
-
-    /**
-     * Removes a callback called when the logged in user changes from the listeners
-     *
-     * @param listener Listener to remove
-     */
-    public removeOnLoggedInUserChangeListener(listener: (loggedInUser?: LoggedInUserData) => void): void {
-        this.onLoggedInUserChangeListeners = this.onLoggedInUserChangeListeners.filter((item) => item !== listener);
+    public getOnLoggedInUserChangeListenable(): Listenable<(loggedInUser?: LoggedInUserData) => void> {
+        return this.onLoggedInUserChangeListenable;
     }
 }
 
@@ -211,9 +201,9 @@ export const useLoggedInUser = (): LoggedInUserData | undefined => {
             setLoggedInUser(loggedInUser);
         };
 
-        authenticationManager.addOnLoggedInUserChangeListener(loggedInUserChangeListener);
+        authenticationManager.getOnLoggedInUserChangeListenable().addListener(loggedInUserChangeListener);
         return () => {
-            authenticationManager.removeOnLoggedInUserChangeListener(loggedInUserChangeListener);
+            authenticationManager.getOnLoggedInUserChangeListenable().removeListener(loggedInUserChangeListener);
         };
     });
 
