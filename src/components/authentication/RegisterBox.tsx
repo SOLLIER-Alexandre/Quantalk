@@ -58,7 +58,7 @@ const RegisterBox: React.FunctionComponent<RegisterBoxProps> = (props: RegisterB
             setPasswordConfirmationError(true);
             setPasswordConfirmationErrorMessage('La confirmation du mot de passe ne peut être vide');
             error = true;
-        } else if (password !== passwordConfirmation) {
+        } else if (password.current !== passwordConfirmation.current) {
             setPasswordConfirmationError(true);
             setPasswordConfirmationErrorMessage('Le mot de passe et sa confirmation ne correspondent pas');
             error = true;
