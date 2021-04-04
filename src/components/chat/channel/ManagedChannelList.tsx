@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ChannelList from './ChannelList';
 import {ChannelData} from '../../../api/channel/ChannelData';
-import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/AuthenticationManager';
+import {LoggedInUserData, useLoggedInUserData} from '../../../api/authentication/AuthenticationManager';
 import ChannelAPI from '../../../api/channel/ChannelAPI';
 import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
 import IconMessage from '../../utils/IconMessage';
@@ -42,7 +42,7 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
     const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data
-    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+    const loggedInUserData: LoggedInUserData | undefined = useLoggedInUserData();
 
     // Pass the channel that was clicked to the parent
     const onChannelClick = (idx: number, data: ChannelData) => {
@@ -51,8 +51,8 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
 
     useEffect(() => {
         // Fetch the available channels and put them in the state
-        if (loggedInUser !== undefined) {
-            ChannelAPI.fetchChannels(loggedInUser.jwt)
+        if (loggedInUserData !== undefined) {
+            ChannelAPI.fetchChannels(loggedInUserData.jwt)
                 .then((res) => {
                     if (!res.error) {
                         setChannels(res.channels);
@@ -61,7 +61,7 @@ const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (pr
                     setFetchError(res.error);
                 });
         }
-    }, [loggedInUser]);
+    }, [loggedInUserData]);
 
     useEffect(() => {
         if (props.websocket !== undefined) {

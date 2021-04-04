@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import MessageList from './MessageList';
-import {LoggedInUserData, useLoggedInUser} from '../../../api/authentication/AuthenticationManager';
+import {LoggedInUserData, useLoggedInUserData} from '../../../api/authentication/AuthenticationManager';
 import {MessageData} from '../../../api/message/MessageData';
 import MessageAPI from '../../../api/message/MessageAPI';
 import './ManagedMessageList.scss';
@@ -35,7 +35,7 @@ const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (pr
     const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data
-    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+    const loggedInUser: LoggedInUserData | undefined = useLoggedInUserData();
 
     useEffect(() => {
         // Fetch the messages from the selected channel and put them in the state

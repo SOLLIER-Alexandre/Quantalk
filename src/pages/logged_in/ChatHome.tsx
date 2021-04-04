@@ -4,7 +4,7 @@ import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
 import {ChannelData} from '../../api/channel/ChannelData';
 import {useHistory, useParams} from 'react-router-dom';
-import {LoggedInUserData, useLoggedInUser} from '../../api/authentication/AuthenticationManager';
+import {LoggedInUserData, useLoggedInUserData} from '../../api/authentication/AuthenticationManager';
 import AddChannelInput from '../../components/chat/channel/AddChannelInput';
 import './ChatHome.scss';
 import {WebSocketManager} from '../../api/websocket/WebSocketManager';
@@ -37,7 +37,7 @@ const ChatHome: React.FunctionComponent = () => {
     const [messageSendError, setMessageSendError] = useState<boolean>(false);
 
     // Get the logged in user data
-    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+    const loggedInUserToken: LoggedInUserData | undefined = useLoggedInUserData();
 
     // Get route params and history hook
     const params = useParams<ChatHomeRouteParams>();
@@ -57,8 +57,8 @@ const ChatHome: React.FunctionComponent = () => {
 
     // Add the channel when the user requires it
     const onChannelAddButtonClick = (channelName: string) => {
-        if (loggedInUser !== undefined) {
-            ChannelAPI.addChannel(loggedInUser.jwt, channelName)
+        if (loggedInUserToken !== undefined) {
+            ChannelAPI.addChannel(loggedInUserToken.jwt, channelName)
                 .then((res) => {
                     setChannelCreationError(res.error);
                 });
@@ -72,8 +72,8 @@ const ChatHome: React.FunctionComponent = () => {
 
     // Send the message to the server
     const onMessageSend = (message: string) => {
-        if (loggedInUser !== undefined && selectedChannelId !== undefined) {
-            MessageAPI.sendMessage(loggedInUser.jwt, selectedChannelId, message)
+        if (loggedInUserToken !== undefined && selectedChannelId !== undefined) {
+            MessageAPI.sendMessage(loggedInUserToken.jwt, selectedChannelId, message)
                 .then((res) => {
                     setMessageSendError(res.error);
                 });
@@ -81,7 +81,7 @@ const ChatHome: React.FunctionComponent = () => {
     };
 
     useEffect(() => {
-        if (loggedInUser !== undefined && websocketManager.current === undefined) {
+        if (loggedInUserToken !== undefined && websocketManager.current === undefined) {
             // Instantiate a new WebSocketManager
             websocketManager.current = new WebSocketManager();
 
@@ -89,7 +89,7 @@ const ChatHome: React.FunctionComponent = () => {
             const onWebSocketOpenListener = () => {
                 websocketManager.current?.send({
                     type: 'authentication',
-                    token: loggedInUser.jwt,
+                    token: loggedInUserToken.jwt,
                 });
 
                 // Subscribe to the selected channel if any
@@ -106,7 +106,7 @@ const ChatHome: React.FunctionComponent = () => {
             websocketManager.current?.getOnOpenListenable().addListener(onWebSocketOpenListener);
             setWebsocketLoading(false);
         }
-    }, [loggedInUser, selectedChannelId]);
+    }, [loggedInUserToken, selectedChannelId]);
 
     useEffect(() => {
         // Subscribe to the channel that was switched

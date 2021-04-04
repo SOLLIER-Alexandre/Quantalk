@@ -1,12 +1,12 @@
 import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
-import {LoggedInUserData, useLoggedInUser} from './api/authentication/AuthenticationManager';
+import {LoggedInUserData, useLoggedInUserData} from './api/authentication/AuthenticationManager';
 import LoggedOutRoutes from './routes/LoggedOutRoutes';
 import LoggedInRoutes from './routes/LoggedInRoutes';
 
 const App = () => {
     // Use logged in user hook
-    const loggedInUser: LoggedInUserData | undefined = useLoggedInUser();
+    const loggedInUser: LoggedInUserData | undefined = useLoggedInUserData();
 
     if (loggedInUser !== undefined) {
         // User is logged in

@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import AuthenticationAPI from './AuthenticationAPI';
 import {JWTData} from './JWTData';
 import Listenable from '../../utils/Listenable';
+import User from '../../models/User';
 
 /**
  * Interface describing the data about the logged in user
@@ -9,7 +10,6 @@ import Listenable from '../../utils/Listenable';
 export interface LoggedInUserData {
     jwt: string,
     id: number,
-    username?: string,
 }
 
 /**
@@ -17,22 +17,35 @@ export interface LoggedInUserData {
  */
 class AuthenticationManager {
     /**
-     * Data about the logged in user
+     * Confidential data about the logged in user
      * @private
      */
-    private loggedInUser?: LoggedInUserData;
+    private loggedInUserData?: LoggedInUserData;
 
     /**
-     * Listeners for callbacks called when the logged in user changed
+     * Logged in user profile data
      * @private
      */
-    private readonly onLoggedInUserChangeListenable: Listenable<(loggedInUser?: LoggedInUserData) => void>;
+    private loggedInUserProfile?: User;
+
+    /**
+     * Listeners for callbacks called when the logged in user data changed
+     * @private
+     */
+    private readonly onLoggedInUserDataChangeListenable: Listenable<(loggedInUserData?: LoggedInUserData) => void>;
+
+    /**
+     * Listeners for callbacks called when the logged in user profile changed
+     * @private
+     */
+    private readonly onLoggedInUserProfileChangeListenable: Listenable<(loggedInUserProfile?: User) => void>;
 
     /**
      * Constructs a new AuthenticationManager
      */
     constructor() {
-        this.onLoggedInUserChangeListenable = new Listenable<(loggedInUser?: LoggedInUserData) => void>();
+        this.onLoggedInUserDataChangeListenable = new Listenable<(loggedInUser?: LoggedInUserData) => void>();
+        this.onLoggedInUserProfileChangeListenable = new Listenable<(loggedInUserProfile?: User) => void>();
 
         // Get the JWT from the cookie
         const authCookie = AuthenticationManager.getAuthCookie();
@@ -42,8 +55,8 @@ class AuthenticationManager {
             const userId = AuthenticationManager.getUserIdFromToken(authCookie);
 
             if (userId !== undefined) {
-                // Set the logged in user without the username temporarily
-                this.setLoggedInUser({
+                // Set the logged in user data
+                this.setLoggedInUserData({
                     jwt: authCookie,
                     id: userId,
                 });
@@ -51,9 +64,8 @@ class AuthenticationManager {
                 AuthenticationAPI.fetchProfile('Bearer ' + authCookie)
                     .then((response) => {
                         if (!response.error) {
-                            // Set the logged in user
-                            this.setLoggedInUser({
-                                jwt: authCookie,
+                            // Set the logged in user profile
+                            this.setLoggedInUserProfile({
                                 id: response.id,
                                 username: response.username,
                             });
@@ -77,9 +89,13 @@ class AuthenticationManager {
                     // Set the JWT to the cookie
                     AuthenticationManager.setAuthCookie(jwt);
 
-                    // Set the logged in user
-                    this.setLoggedInUser({
+                    // Set the logged in user data and profile
+                    this.setLoggedInUserData({
                         jwt: jwt,
+                        id: response.id,
+                    });
+
+                    this.setLoggedInUserProfile({
                         id: response.id,
                         username: response.username,
                     });
@@ -134,28 +150,50 @@ class AuthenticationManager {
         document.cookie = 'AUTH_JWT=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
 
         // Unset the logged in user
-        this.setLoggedInUser(undefined);
+        this.setLoggedInUserData(undefined);
+        this.setLoggedInUserProfile(undefined);
     }
 
     /**
-     * Sets the currently logged in user
+     * Sets the currently logged in user data
      *
-     * @param loggedInUser New currently logged in user
+     * @param loggedInUserData New currently logged in user data
      */
-    public setLoggedInUser(loggedInUser?: LoggedInUserData): void {
-        this.loggedInUser = loggedInUser;
+    public setLoggedInUserData(loggedInUserData?: LoggedInUserData): void {
+        this.loggedInUserData = loggedInUserData;
 
-        // Tell the listeners we got a new JWT
-        this.onLoggedInUserChangeListenable.notify(this.loggedInUser);
+        // Tell the listeners we got a new logged in user data
+        this.onLoggedInUserDataChangeListenable.notify(this.loggedInUserData);
     }
 
     /**
-     * Gets the currently logged in user
+     * Gets the currently logged in user data
      *
-     * @return The currently logged in user
+     * @return The currently logged in user data
      */
-    public getLoggedInUser(): LoggedInUserData | undefined {
-        return this.loggedInUser;
+    public getLoggedInUserData(): LoggedInUserData | undefined {
+        return this.loggedInUserData;
+    }
+
+    /**
+     * Sets the currently logged in user profile
+     *
+     * @param loggedInUserProfile New currently logged in user profile
+     */
+    public setLoggedInUserProfile(loggedInUserProfile?: User): void {
+        this.loggedInUserProfile = loggedInUserProfile;
+
+        // Tell the listeners we got a new logged in user profile
+        this.onLoggedInUserProfileChangeListenable.notify(this.loggedInUserProfile);
+    }
+
+    /**
+     * Gets the currently logged in user profile
+     *
+     * @return The currently logged in user profile
+     */
+    public getLoggedInUserProfile(): User | undefined {
+        return this.loggedInUserProfile;
     }
 
     /**
@@ -177,10 +215,17 @@ class AuthenticationManager {
     }
 
     /**
-     * Gets the listenable for when the logged in user has changed
+     * Gets the listenable for when the logged in user data has changed
      */
-    public getOnLoggedInUserChangeListenable(): Listenable<(loggedInUser?: LoggedInUserData) => void> {
-        return this.onLoggedInUserChangeListenable;
+    public getOnLoggedInUserDataChangeListenable(): Listenable<(loggedInUserData?: LoggedInUserData) => void> {
+        return this.onLoggedInUserDataChangeListenable;
+    }
+
+    /**
+     * Gets the listenable for when the logged in user profile has changed
+     */
+    public getOnLoggedInUserProfileChangeListenable(): Listenable<(loggedInUserProfile?: User) => void> {
+        return this.onLoggedInUserProfileChangeListenable;
     }
 }
 
@@ -193,20 +238,52 @@ export default authenticationManager;
 /**
  * Hook returning the currently logged in user data, if any
  */
-export const useLoggedInUser = (): LoggedInUserData | undefined => {
-    const [loggedInUser, setLoggedInUser] = useState<LoggedInUserData | undefined>(authenticationManager.getLoggedInUser());
+export const useLoggedInUserData = (): LoggedInUserData | undefined => {
+    const [loggedInUserData, setLoggedInUserData] = useState<LoggedInUserData | undefined>(authenticationManager.getLoggedInUserData());
 
     useEffect(() => {
-        const loggedInUserChangeListener = (loggedInUser?: LoggedInUserData): void => {
-            setLoggedInUser(loggedInUser);
+        const loggedInUserDataChangeListener = (newLoggedInUserData?: LoggedInUserData): void => {
+            setLoggedInUserData(newLoggedInUserData);
         };
 
-        authenticationManager.getOnLoggedInUserChangeListenable().addListener(loggedInUserChangeListener);
+        // Add the listener to update the state when needed
+        authenticationManager.getOnLoggedInUserDataChangeListenable().addListener(loggedInUserDataChangeListener);
 
         return () => {
-            authenticationManager.getOnLoggedInUserChangeListenable().removeListener(loggedInUserChangeListener);
+            // Remove the listener, it's no longer needed
+            authenticationManager.getOnLoggedInUserDataChangeListenable().removeListener(loggedInUserDataChangeListener);
         };
     });
 
-    return loggedInUser;
+    return loggedInUserData;
+};
+
+/**
+ * Hook returning the currently logged in user profile, if any
+ */
+export const useLoggedInUserProfile = (): User | undefined => {
+    const [loggedInUserProfile, setLoggedInUserProfile] = useState<User | undefined>(authenticationManager.getLoggedInUserProfile());
+
+    useEffect(() => {
+        const loggedInUserProfileChangeListener = (newLoggedInUserProfile?: User): void => {
+            setLoggedInUserProfile(newLoggedInUserProfile);
+        };
+
+        // Because this is a network fetched resource, we need to check its value in the useEffect as well
+        const currentLoggedInUserProfile: User | undefined = authenticationManager.getLoggedInUserProfile();
+
+        if (loggedInUserProfile !== currentLoggedInUserProfile) {
+            setLoggedInUserProfile(currentLoggedInUserProfile);
+        }
+
+        // Add the listener to update the state when needed
+        authenticationManager.getOnLoggedInUserProfileChangeListenable().addListener(loggedInUserProfileChangeListener);
+
+        return () => {
+            // Remove the listener, it's no longer needed
+            authenticationManager.getOnLoggedInUserProfileChangeListenable().removeListener(loggedInUserProfileChangeListener);
+        };
+    }, [loggedInUserProfile]);
+
+    return loggedInUserProfile;
 };
