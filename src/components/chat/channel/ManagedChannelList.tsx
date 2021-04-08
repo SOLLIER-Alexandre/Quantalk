@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ChannelList from './ChannelList';
-import {ChannelData} from '../../../api/channel/ChannelData';
+import {ChatChannel} from '../../../models/ChatChannel';
 import {LoggedInUserData, useLoggedInUserData} from '../../../api/authentication/AuthenticationManager';
 import ChannelAPI from '../../../api/channel/ChannelAPI';
 import {WebSocketManager} from '../../../api/websocket/WebSocketManager';
@@ -27,7 +27,7 @@ interface ManagedChannelListProps {
      *
      * @param data Data about the channel that was clicked
      */
-    onChannelClickListener?: (data: ChannelData) => void,
+    onChannelClickListener?: (data: ChatChannel) => void,
 }
 
 /**
@@ -38,14 +38,14 @@ interface ManagedChannelListProps {
  */
 const ManagedChannelList: React.FunctionComponent<ManagedChannelListProps> = (props: ManagedChannelListProps) => {
     // Component state
-    const [channels, setChannels] = useState<Array<ChannelData>>([]);
+    const [channels, setChannels] = useState<Array<ChatChannel>>([]);
     const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data
     const loggedInUserData: LoggedInUserData | undefined = useLoggedInUserData();
 
     // Pass the channel that was clicked to the parent
-    const onChannelClick = (idx: number, data: ChannelData) => {
+    const onChannelClick = (idx: number, data: ChatChannel) => {
         props.onChannelClickListener?.(data);
     };
 

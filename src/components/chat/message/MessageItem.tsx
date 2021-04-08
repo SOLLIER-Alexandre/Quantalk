@@ -1,5 +1,5 @@
 import React from 'react';
-import {MessageData} from '../../../api/message/MessageData';
+import {ChatMessage} from '../../../models/ChatMessage';
 import './MessageItem.scss';
 
 /**
@@ -9,7 +9,7 @@ interface MessageItemProps {
     /**
      * The data to show in this component
      */
-    data: MessageData,
+    data: ChatMessage,
 
     /**
      * Class name for the message item container

@@ -2,7 +2,7 @@ import CommonPageLayout from '../../components/common_page/CommonPageLayout';
 import React, {useEffect, useRef, useState} from 'react';
 import ChannelAPI from '../../api/channel/ChannelAPI';
 import LoggedInButton from '../../components/utils/LoggedInButton';
-import {ChannelData} from '../../api/channel/ChannelData';
+import {ChatChannel} from '../../models/ChatChannel';
 import {useHistory, useParams} from 'react-router-dom';
 import {LoggedInUserData, useLoggedInUserData} from '../../api/authentication/AuthenticationManager';
 import AddChannelInput from '../../components/chat/channel/AddChannelInput';
@@ -66,7 +66,7 @@ const ChatHome: React.FunctionComponent = () => {
     };
 
     // Select the channel ID that was clicked
-    const onChannelClick = (data: ChannelData) => {
+    const onChannelClick = (data: ChatChannel) => {
         history.push(`/channel/${data.id}`);
     };
 

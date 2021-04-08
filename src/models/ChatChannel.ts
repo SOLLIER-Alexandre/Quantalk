@@ -1,7 +1,7 @@
 /**
  * Data about a chat channel
  */
-export interface ChannelData {
+export interface ChatChannel {
     id: number,
     owner: number,
     ownerUsername: string,

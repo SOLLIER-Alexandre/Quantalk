@@ -1,5 +1,5 @@
 import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
-import {ChannelData} from './ChannelData';
+import {ChatChannel} from '../../models/ChatChannel';
 
 /**
  * Status code for a channels fetch response
@@ -13,7 +13,7 @@ export enum ChannelsFetchResponseStatus {
  * Format for a successful response to a channels fetch request
  */
 interface ChannelsFetchResponseSuccess extends APIResponseSuccess {
-    channels: Array<ChannelData>,
+    channels: Array<ChatChannel>,
 }
 
 /**

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import MessageList from './MessageList';
 import {LoggedInUserData, useLoggedInUserData} from '../../../api/authentication/AuthenticationManager';
-import {MessageData} from '../../../api/message/MessageData';
+import {ChatMessage} from '../../../models/ChatMessage';
 import MessageAPI from '../../../api/message/MessageAPI';
 import './ManagedMessageList.scss';
 import IconMessage from '../../utils/IconMessage';
@@ -31,7 +31,7 @@ interface ManagedMessageListProps {
  */
 const ManagedMessageList: React.FunctionComponent<ManagedMessageListProps> = (props: ManagedMessageListProps) => {
     // Component state
-    const [messages, setMessages] = useState<Array<MessageData>>([]);
+    const [messages, setMessages] = useState<Array<ChatMessage>>([]);
     const [fetchError, setFetchError] = useState<boolean>(false);
 
     // Get the logged in user data

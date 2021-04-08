@@ -1,4 +1,5 @@
 import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
+import User from '../../models/User';
 
 /**
  * Status code for a profile response
@@ -11,10 +12,7 @@ export enum ProfileResponseStatus {
 /**
  * Format for a successful response to a profile request
  */
-interface ProfileResponseSuccess extends APIResponseSuccess {
-    id: number,
-    username: string,
-}
+type ProfileResponseSuccess = APIResponseSuccess & User;
 
 /**
  * Format for a response to a profile request

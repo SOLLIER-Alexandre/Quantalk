@@ -1,6 +1,6 @@
 import React from 'react';
 import './ChannelItem.scss';
-import {ChannelData} from '../../../api/channel/ChannelData';
+import {ChatChannel} from '../../../models/ChatChannel';
 
 /**
  * Props for the ChannelItem component
@@ -9,7 +9,7 @@ interface ChannelItemProps {
     /**
      * The data to show in this component
      */
-    data: ChannelData,
+    data: ChatChannel,
 
     /**
      * This channel item is the active one
@@ -21,7 +21,7 @@ interface ChannelItemProps {
      *
      * @param data Data associated with the item
      */
-    onClickListener?: (data: ChannelData) => void,
+    onClickListener?: (data: ChatChannel) => void,
 }
 
 /**

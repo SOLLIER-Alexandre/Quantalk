@@ -1,5 +1,5 @@
 import {APIResponseFailure, APIResponseSuccess} from '../CommonsAPI';
-import {MessageData} from './MessageData';
+import {ChatMessage} from '../../models/ChatMessage';
 
 /**
  * Status code for a messages fetch response
@@ -13,7 +13,7 @@ export enum MessagesFetchResponseStatus {
  * Format for a successful response to a messages fetch request
  */
 interface MessagesFetchResponseSuccess extends APIResponseSuccess {
-    messages: Array<MessageData>,
+    messages: Array<ChatMessage>,
 }
 
 /**

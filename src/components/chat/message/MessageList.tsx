@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {MessageData} from '../../../api/message/MessageData';
+import {ChatMessage} from '../../../models/ChatMessage';
 import MessageItem from './MessageItem';
 import './MessageList.scss';
 
@@ -22,7 +22,7 @@ interface MessageListProps {
     /**
      * Dataset to show in the list
      */
-    data: Array<MessageData>,
+    data: Array<ChatMessage>,
 
     /**
      * ID of the user to highlight their messages

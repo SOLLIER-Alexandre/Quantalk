@@ -1,7 +1,7 @@
 /**
  * Data about a chat message
  */
-export interface MessageData {
+export interface ChatMessage {
     id: number,
     content: string,
     sender: number,
